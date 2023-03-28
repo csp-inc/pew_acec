@@ -1,6 +1,8 @@
-today <- paste0(mid(Sys.Date(),3,2),
-                mid(Sys.Date(),6,2),
-                mid(Sys.Date(),9,2))
+# today <- paste0(mid(Sys.Date(),3,2),
+#                 mid(Sys.Date(),6,2),
+#                 mid(Sys.Date(),9,2))
+
+today <- paste0(Sys.Date())
 
 
 #########################################################
@@ -13,34 +15,25 @@ varsRasters <- list(amph, bird, mamm, rept, impSpp, connect,
                     intact, ecoRar, vegDiv, sage, annHerb,
                     climAcc, climStab, geoDiv, geoRar,
                     geotherm, oilGas, mineral, solar, wind,
-                    waterAvail, waterFut, nightDark)
+                    waterAvail, waterFut, nightDark, aquifer_vuln, erosion)
 
 
 namesRasters <- c("amph", "bird", "mamm", "rept", "impSpp", "connect",
                   "intact", "ecoRar", "vegDiv", "sage", "annHerb",
                   "climAcc", "climStab", "geoDiv", "geoRar",
                   "geotherm", "oilGas", "mineral", "solar", "wind",
-                  "waterAvail", "waterFut", "nightDark")
-
-
-
-## Field office selection --------------------------------------------------------------
-
-FO <- "RockSprings-WYO"
-# FO <- "Lewistown-MT"
-
-
+                  "waterAvail", "waterFut", "nightDark", "aquifer_vuln", "erosion")
 
 ## Domain selection -----------------------------------------------------------
 
 domains <- list(st_as_sf(west),
                 blmWest,
-                st_as_sf(wyo),
-                blmWyo)
+                st_as_sf(nm),
+                blmNM)
 dNames <- c("west",
             "blmWest",
-            "wyo",
-            "blmWyo")
+            "nm",
+            "blmNM")
 
 # domains <- list(st_as_sf(west),
 #                 blmWest,
@@ -55,15 +48,14 @@ dNames <- c("west",
 ## Sample size selection to match domains -------------------------------------
 
 ns <- c(2000, 2000, 500, 500)
-# ns <- c(20, 20, 5, 5)
+#ns <- c(20, 20, 5, 5)
 
 
 ## AOI selection --------------------------------------------------------------
 
-aoisShapes <- list(rd_allx, ls)
+aoisShapes <- list(otero)
 aoisNames <- c(
-  "Red Desert",
-  "Little Sandy"
+  "Otero Mesa"
 )
 
 # aoisShapes <- list(lewis)
@@ -104,7 +96,7 @@ for (i in 1:length(aoisShapes)){
   # Iteratively select AOIs
   a <- aoisShapes[[i]]
   # Compute AOI area
-  trgt_area <- sum(terra::area(a, unit = "m")) # sum in case multi-part 
+  trgt_area <- sum(terra::expanse(vect(a), unit = "m")) # sum in case multi-part 
   # Work thru each of the domains.
   for (j in 1:length(domains)){
     # Within a given domain, create n sample points
@@ -166,9 +158,9 @@ for (i in 1:length(aoisShapes)){
 foo <- cbind(an, dn, nv, vn, av, sv.means, sv.medians, pv, cv, ev) %>% as.data.frame()
 foo[c(3,5:10)] <- lapply(foo[c(3,5:10)], as.numeric) # Set numbers to numbers.
 
-v <- 1
+v <- 2
 # v <- v+1
-write.csv(foo, paste0(out.dir, FO, "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
+write.csv(foo, paste0(out.dir, "OteroMesa", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
 
 
 
