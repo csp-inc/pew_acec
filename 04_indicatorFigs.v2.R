@@ -1,8 +1,7 @@
 
-today <- paste0(mid(Sys.Date(),3,2),
-                mid(Sys.Date(),6,2),
-                mid(Sys.Date(),9,2))
+today <- paste0(Sys.Date())
 
+setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/")
 
 #########################################
 ## CREATE INDICATOR FIGURES FOR REPORT ##
@@ -10,18 +9,13 @@ today <- paste0(mid(Sys.Date(),3,2),
 
 ## Load csvs with raw results --------------------------------------------------
 
-data <- read.csv(paste0(out.dir, "Lewistown-MT_aoi_vs_sample_percentiles_221118_v2.csv")) %>%
+data <- read.csv(paste0(out.dir, "OteroMesa_aoi_vs_sample_percentiles_2023-03-28_v2.csv")) %>%
   dplyr::select(an, dn, nv, vn, pv)
-
-# data <- read.csv(paste0(out.dir, "RockSprings-WYO_aoi_vs_sample_percentiles_221118_v1.csv")) %>%
-#   dplyr::select(an, dn, nv, vn, pv)
-
-
 
 ## Assign categories/labels ----------------------------------------------------
 
 # Assign value/threat
-threats <- c("annHerb", "geotherm", "wind", "solar", "mineral", "oilGas", "waterFut")
+threats <- c("annHerb", "geotherm", "wind", "solar", "mineral", "oilGas", "waterFut", "aquifer_vuln", "erosion")
 data <- data %>%
   mutate(type = ifelse(vn %in% threats, "threat", "value"))
 
@@ -30,7 +24,7 @@ lu <- data.frame(layer = c("amph", "bird", "mamm", "rept", "impSpp", "connect",
                            "intact", "ecoRar", "vegDiv", "sage", "annHerb",
                            "climAcc", "climStab", "geoDiv", "geoRar",
                            "geotherm", "oilGas", "mineral", "solar", "wind",
-                           "waterAvail", "waterFut", "nightDark"),
+                           "waterAvail", "waterFut", "nightDark", "aquifer_vuln", "erosion"),
                  variable = c("Amphibian species richness", "Bird species richness",
                               "Mammal species richness", "Reptile species richness",
                               "Imperiled species richness", "Ecological connectivity",
@@ -42,11 +36,17 @@ lu <- data.frame(layer = c("amph", "bird", "mamm", "rept", "impSpp", "connect",
                               "Oil and gas resource potential", "Mineral resource potential",
                               "Solar resource potential", "Wind resource potential",
                               "Water availability", "Future water withdrawals",
-                              "Night sky darkness"))
+                              "Night sky darkness", "Aquifer vulnerability", "Erosion potential"))
 
-data <- data %>% left_join(lu, by = c("vn" = "layer"))
+data <- data %>% left_join(lu, by = c("vn" = "layer")) %>%
+  dplyr::filter(!vn %in% c("annHerb", "sage"))
 
-
+data <- data %>% 
+  dplyr::mutate(dn_vn = paste(dn, vn, sep="_")) %>%
+  dplyr::filter(!dn_vn %in% c('west_aquifer_vuln', 'blmWest_aquifer_vuln', 
+                              'west_erosion', 'blmWest_erosion')) %>%
+  dplyr::select(-dn_vn)
+  
 # Pull colors for green (Value) and red (threat) gradients
 # Source: https://colordesigner.io/gradient-generator
 # Define list of colors (trial and error showed reverse necessary)
@@ -108,13 +108,11 @@ sel <- data %>%
   filter(
          # an == "Little Sandy",
          # an == "Red Desert",
-         an == "lewis",
+         an == "Otero Mesa",
          # dn == "west"
          # dn == "blmWest"
-         # dn == "wyo"
-         # dn == "MT"
-         # dn == "blmWyo"
-         dn == "blmMT"
+         # dn == "nm"
+           dn == "blmNM"
          )
 
 # Order data by percentile ranks (greatest first)
@@ -159,7 +157,7 @@ p <- sel %>%
 
 p
 
-v <- 1
+v <- 2
 # v <- v+1
 ggsave(paste0(out.dir, "top8_", sel$an[1], "_", sel$dn[1], "_n", sel$n[1], "_", today, "_v",v, ".png"),
        p,
