@@ -29,9 +29,10 @@ usa <- load_f(paste0(data.dir, "/working/tl_2012_us_state.shp"))
 keeps <- c("Washington", "Oregon", "California", "Idaho", "Montana",
            "Wyoming", "Nevada", "Utah", "Colorado", "Arizona", "New Mexico")
 west <- usa %>% filter(NAME %in% keeps)
-wyo <- usa %>% filter(NAME == "Wyoming") %>% as_Spatial()
-mt <- usa %>% filter(NAME == "Montana") %>% as_Spatial()
-wyoArea <- terra::area(wyo) %>% sum()/1000000
+nm <- usa %>% filter(NAME == "New Mexico") %>% as_Spatial() 
+#wyo <- usa %>% filter(NAME == "Wyoming") %>% as_Spatial()
+#mt <- usa %>% filter(NAME == "Montana") %>% as_Spatial()
+nmArea <- terra::area(nm) %>% sum()/1000000
 # unique(west$NAME) ; plot(west)
 remove(usa, keeps)
 
@@ -77,26 +78,26 @@ remove(usa, keeps)
 # shapefile(as_Spatial(blmMT), paste0(data.dir,"working/blm_mt.shp"))
 
 
-blmWest <- load_f(paste0(data.dir, "working/blm_west.shp"))
-blmWyo <- load_f(paste0(data.dir,"working/blm_wyo.shp"))
-blmMT <- load_f(paste0(data.dir, "working/blm_mt.shp"))
-
+blmWest <- load_f(paste0(data.dir, "/working/blm_west.shp"))
+#blmWyo <- load_f(paste0(data.dir,"working/blm_wyo.shp"))
+#blmMT <- load_f(paste0(data.dir, "working/blm_mt.shp"))
+blmNM <- load_f(paste0(data.dir, "/working/blm_NM.gpkg"))
 
 
 #-------------------------------------------------------------------------------
 ## Load AOIs
 
-
-# Rock Springs Wyo: Red Desert all designations AND special mgmt area removed AND other areas
-rd_allx <- load_f(paste0(data.dir,
-                         "RockSpringsFO_Wyo/RedDesert-LittleSandyLandscape/RD_IBA_EraseAll2.shp")) %>%
-  as_Spatial()
-
-# Rock Springs Wyo: Little Sandy
-ls <- load_f(paste0(data.dir,
-                    "RockSpringsFO_Wyo/RedDesert-LittleSandyLandscape/RD_LS_IBA_RSFO - Copy.shp")) %>%
-  filter(SITE_NAME == "Little Sandy Landscape") %>%
-  as_Spatial()
+# 
+# # Rock Springs Wyo: Red Desert all designations AND special mgmt area removed AND other areas
+# rd_allx <- load_f(paste0(data.dir,
+#                          "RockSpringsFO_Wyo/RedDesert-LittleSandyLandscape/RD_IBA_EraseAll2.shp")) %>%
+#   as_Spatial()
+# 
+# # Rock Springs Wyo: Little Sandy
+# ls <- load_f(paste0(data.dir,
+#                     "RockSpringsFO_Wyo/RedDesert-LittleSandyLandscape/RD_LS_IBA_RSFO - Copy.shp")) %>%
+#   filter(SITE_NAME == "Little Sandy Landscape") %>%
+#   as_Spatial()
 
 # shapefile(rd_allx, paste0(data.dir, "RockSpringsFO_Wyo/RedDesert-LittleSandyLandscape/red_desert_final.shp"))
 # shapefile(ls, paste0(data.dir, "RockSpringsFO_Wyo/RedDesert-LittleSandyLandscape/little_sandy_final.shp"))
@@ -114,9 +115,11 @@ ls <- load_f(paste0(data.dir,
 #   as_Spatial() %>%
 #   aggregate() #b/c multi-part
 
+otero <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/OteroMesa_NM/OteroMesa_NM.shp")
+
 #-------------------------------------------------------------------------------
 ## Load indicators
-setwd("G:/My Drive/2Pew ACEC/Pew_ACEC/data/working")
+setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/working")
 
 (list <- list.files(pattern= ".tif"))
 
@@ -182,6 +185,7 @@ setwd("G:/My Drive/2Pew ACEC/Pew_ACEC/data/working")
 # writeRaster(foo, "annHerb_270m.tif")
 # (end <- start - Sys.time())
 
+### Neither sage brush nor annual herbaceous cover layers on file extend to southern New Mexico (outside of the sagebrush biome)
 (sage <- raster("sage_270m.tif"))
 (annHerb <- raster("annHerb_270m.tif"))
 
@@ -210,24 +214,18 @@ setwd("G:/My Drive/2Pew ACEC/Pew_ACEC/data/working")
 
 
 # Misc
-(nightDark <- raster("virrs2011.tif")) 
-# Migration routes.
-w1 <- load_f(paste0(data.dir,"source/WGFD_MuleDeerCorridorComplexes/MuleDeerMigrationBaggsWGFDCorridor.shp")) %>% as_Spatial()
-w2 <- load_f(paste0(data.dir,"source/WGFD_MuleDeerCorridorComplexes/MuleDeerMigrationPlatteValleyWGFDCorridor.shp")) %>% as_Spatial()
-w3 <- load_f(paste0(data.dir,"source/WGFD_MuleDeerCorridorComplexes/MuleDeerMigrationSubletteWGFDCorridor.shp")) %>% as_Spatial()
-# wyoMule <- raster::bind(w1, w2, w3) %>% st_as_sf() %>% fasterize(amph)
-migr <- union(w1, w2) %>% union(w3)
-remove(w1, w2, w3)
+### Night sky darkness is presented originally as 0=dark 1=brightest -- invert raster to assign high values to darker areas
+(nightDark <- raster("virrs2011.tif"))
+(nightDark <- (1-nightDark))
 
+###Aquifer vulnerability 
+(aquifer_vuln <- raster("NM_DRASTIC_270m.tif"))
+###Erosion risk
+(erosion <- raster("NM_rusle_270m.tif"))
 
 #IBA 
-# iba <- load_f(paste0(local.data.dir,"/IBA_CONUS/Important_Bird_Areas_Polygon_Public_View.shp"))
-# iba_mt <- st_as_sf(iba) %>% st_intersection(st_as_sf(mt)) %>% as_Spatial()
-# shapefile(iba_mt, paste0(local.data.dir,"/IBA_CONUS/iba_mt.shp"))
-# iba_mt <- load_f(paste0(local.data.dir,"/IBA_CONUS/iba_mt.shp"))
-iba_wyo <- load_f(paste0(data.dir, "RockSpringsFO_Wyo/audiba_WY_20150818/audiba_WY_20150818.shp")) %>% as_Spatial()
-
-setwd("G:/My Drive/2Pew ACEC/Pew_ACEC/")
+iba_nm <- load_f(paste0(data.dir, "/working/Important_Bird_Areas_nm.gpkg"))
+setwd("/Volumes/GoogleDrive/My Drive/00_CSP_Projects/Pew_ACEC")
 
 
 # ------------------------------------------------------------------------------
