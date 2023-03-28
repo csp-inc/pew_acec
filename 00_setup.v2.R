@@ -4,11 +4,11 @@
 
 ##----------------------------------------------
 ## Set working directory 
-setwd("G:/My Drive/2Pew ACEC/Pew_ACEC/")
-wd <- "G:/My Drive/2Pew ACEC/Pew_ACEC/"
-data.dir <- "G:/My Drive/2Pew ACEC/Pew_ACEC/data/"
-local.data.dir <- "C:/Users/clitt/OneDrive/Desktop/data_gen/"
-out.dir <- "G:/My Drive/2Pew ACEC/Pew_ACEC/analyses/output/"
+setwd("/Volumes/GoogleDrive/My Drive/00_CSP_Projects/Pew_ACEC")
+wd <- "/Volumes/GoogleDrive/My Drive/00_CSP_Projects/Pew_ACEC"
+data.dir <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data"
+#local.data.dir <- "C:/Users/clitt/OneDrive/Desktop/data_gen/"
+out.dir <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/"
 
 
 
