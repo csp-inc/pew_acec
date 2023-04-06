@@ -87,34 +87,6 @@ blmNM <- load_f(paste0(data.dir, "/working/blm_NM.gpkg"))
 #-------------------------------------------------------------------------------
 ## Load AOIs
 
-# 
-# # Rock Springs Wyo: Red Desert all designations AND special mgmt area removed AND other areas
-# rd_allx <- load_f(paste0(data.dir,
-#                          "RockSpringsFO_Wyo/RedDesert-LittleSandyLandscape/RD_IBA_EraseAll2.shp")) %>%
-#   as_Spatial()
-# 
-# # Rock Springs Wyo: Little Sandy
-# ls <- load_f(paste0(data.dir,
-#                     "RockSpringsFO_Wyo/RedDesert-LittleSandyLandscape/RD_LS_IBA_RSFO - Copy.shp")) %>%
-#   filter(SITE_NAME == "Little Sandy Landscape") %>%
-#   as_Spatial()
-
-# shapefile(rd_allx, paste0(data.dir, "RockSpringsFO_Wyo/RedDesert-LittleSandyLandscape/red_desert_final.shp"))
-# shapefile(ls, paste0(data.dir, "RockSpringsFO_Wyo/RedDesert-LittleSandyLandscape/little_sandy_final.shp"))
-
-
-
-# Lewistown MT (only retain BLM areas within priortiy sage grouse habitat)
-# lewis <- load_f(paste0(data.dir, "LewistownFO_MT/Lewistown ACEC files/Priority Sage-Grouse Habitat/Lewistown_GreaterSageGrouse_PriorityHabitat.shp")) %>%
-#   as_Spatial() %>%
-#   aggregate() #%>%
-# lewis <- blmMT %>% st_intersection(st_as_sf(lewis)) %>%
-#   as_Spatial()
-# shapefile(lewis, paste0(data.dir,"LewistownFO_MT/blm_in_lewistown_prioritySG.shp"))
-# lewis <- load_f(paste0(data.dir,"LewistownFO_MT/blm_in_lewistown_prioritySG.shp")) %>%
-#   as_Spatial() %>%
-#   aggregate() #b/c multi-part
-
 otero <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/OteroMesa_NM/OteroMesa_NM.shp")
 
 #-------------------------------------------------------------------------------
@@ -156,34 +128,6 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 
 
 # Sage & annual herb
-# RCMAP layers via GEE (sageNorm, annHerbNorm) had goofy CRS. Went to source at SciBase (even tho 30m)
-# Both requisite layers for 2019 and 2020 errored,  hence using 2018.
-# Below, loaded orig layers at SciBase then cropped and masked to sagebrush biome.
-
-# start <- Sys.time()
-# (sage <- raster(paste0(local.data.dir,
-#                        "eco/Sagebrush_2009_2020/rcmap_sagebrush_2018.img")) %>% crop(sb) %>% mask(sb))
-# writeRaster(sage, "sage.tif")
-# (end <- start - Sys.time())
-# 
-# start <- Sys.time()
-# (annHerb <- raster(paste0(local.data.dir,
-#                           "eco/Annual_Herbaceous_2009_2020/rcmap_annual_herbaceous_2018.img")) %>% crop(sb) %>% mask(sb))
-# writeRaster(annHerb, "annHerb.tif")
-# (end <- start - Sys.time())
-# 
-# (sage <- raster("sage.tif"))
-# (annHerb <- raster("annHerb.tif"))
-# 
-# start <- Sys.time()
-# boo <- sage %>% resample(amph)
-# writeRaster(boo, "sage_270m.tif")
-# (end <- start - Sys.time())
-# 
-# start <- Sys.time()
-# foo <- annHerb %>% resample(amph)
-# writeRaster(foo, "annHerb_270m.tif")
-# (end <- start - Sys.time())
 
 ### Neither sage brush nor annual herbaceous cover layers on file extend to southern New Mexico (outside of the sagebrush biome)
 (sage <- raster("sage_270m.tif"))
