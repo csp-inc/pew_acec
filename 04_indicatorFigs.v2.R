@@ -38,9 +38,11 @@ lu <- data.frame(layer = c("amph", "bird", "mamm", "rept", "impSpp", "connect",
                               "Water availability", "Future water withdrawals",
                               "Night sky darkness", "Aquifer vulnerability", "Erosion potential"))
 
+## Remove annual herbaceous cover and sagebrush cover as these layers do not extend to the Otero Mesa ACEC area 
 data <- data %>% left_join(lu, by = c("vn" = "layer")) %>%
   dplyr::filter(!vn %in% c("annHerb", "sage"))
 
+### Also remove aquifer vulnerability and erosion potential for West-wide and BLM West-wide comparisons as the layers pertain only to NM
 data <- data %>% 
   dplyr::mutate(dn_vn = paste(dn, vn, sep="_")) %>%
   dplyr::filter(!dn_vn %in% c('west_aquifer_vuln', 'blmWest_aquifer_vuln', 
