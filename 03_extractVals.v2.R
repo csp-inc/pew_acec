@@ -35,15 +35,6 @@ dNames <- c("west",
             "nm",
             "blmNM")
 
-# domains <- list(st_as_sf(west),
-#                 blmWest,
-#                 st_as_sf(mt),
-#                 blmMT)
-# dNames <- c("west",
-#             "blmWest",
-#             "MT",
-#             "blmMT")
-
 
 ## Sample size selection to match domains -------------------------------------
 
@@ -57,9 +48,6 @@ aoisShapes <- list(otero)
 aoisNames <- c(
   "Otero Mesa"
 )
-
-# aoisShapes <- list(lewis)
-# aoisNames <- c("lewis")
 
 
 ## Loop to extract values------------------------------------------------------
@@ -160,7 +148,8 @@ foo[c(3,5:10)] <- lapply(foo[c(3,5:10)], as.numeric) # Set numbers to numbers.
 
 v <- 2
 # v <- v+1
-write.csv(foo, paste0(out.dir, "OteroMesa", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
+# Turn on to write out file
+#write.csv(foo, paste0(out.dir, "OteroMesa", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
 
 
 
