@@ -30,10 +30,7 @@ keeps <- c("Washington", "Oregon", "California", "Idaho", "Montana",
            "Wyoming", "Nevada", "Utah", "Colorado", "Arizona", "New Mexico")
 west <- usa %>% filter(NAME %in% keeps)
 nm <- usa %>% filter(NAME == "New Mexico") %>% as_Spatial() 
-#wyo <- usa %>% filter(NAME == "Wyoming") %>% as_Spatial()
-#mt <- usa %>% filter(NAME == "Montana") %>% as_Spatial()
 nmArea <- terra::area(nm) %>% sum()/1000000
-# unique(west$NAME) ; plot(west)
 remove(usa, keeps)
 
 
@@ -79,8 +76,6 @@ remove(usa, keeps)
 
 
 blmWest <- load_f(paste0(data.dir, "/working/blm_west.shp"))
-#blmWyo <- load_f(paste0(data.dir,"working/blm_wyo.shp"))
-#blmMT <- load_f(paste0(data.dir, "working/blm_mt.shp"))
 blmNM <- load_f(paste0(data.dir, "/working/blm_NM.gpkg"))
 
 
@@ -120,7 +115,7 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 (impSpp <- raster("impSppNorm.tif")) ; crs(impSpp) <- proj.crs
 
 
-# Ecological connectivity, intactness, system div.
+# Ecological connectivity, intactness, ecosystem div.
 (connect <- raster("connNorm.tif"))
 (intact <- raster("intactNorm.tif"))
 (ecoRar <- raster("ecorarityaggto270norm.tif"))
