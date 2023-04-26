@@ -29,8 +29,8 @@ usa <- load_f(paste0(data.dir, "/working/tl_2012_us_state.shp"))
 keeps <- c("Washington", "Oregon", "California", "Idaho", "Montana",
            "Wyoming", "Nevada", "Utah", "Colorado", "Arizona", "New Mexico")
 west <- usa %>% filter(NAME %in% keeps)
-nm <- usa %>% filter(NAME == "New Mexico") %>% as_Spatial() 
-nmArea <- terra::area(nm) %>% sum()/1000000
+mt <- usa %>% filter(NAME == "Montana") %>% as_Spatial() 
+mtArea <- terra::area(mt) %>% sum()/1000000
 remove(usa, keeps)
 
 
@@ -38,7 +38,7 @@ remove(usa, keeps)
 
 #-------------------------------------------------------------------------------
 # Load sagebrush biome; clip to west
-# sb <- load_f(paste0(local.data.dir,"eco/US_Sagebrush_Biome_2019.shp")) %>% st_crop(west)
+sb <- load_f(paste0(local.data.dir,"eco/US_Sagebrush_Biome_2019.shp")) %>% st_crop(west)
 
 
 
@@ -76,13 +76,12 @@ remove(usa, keeps)
 
 
 blmWest <- load_f(paste0(data.dir, "/working/blm_west.shp"))
-blmNM <- load_f(paste0(data.dir, "/working/blm_NM.gpkg"))
-
+blmMT <- load_f(paste0(data.dir, "/working/blm_mt.shp"))
 
 #-------------------------------------------------------------------------------
 ## Load AOIs
 
-otero <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/OteroMesa_NM/OteroMesa_NM.shp")
+musselshell <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/Musselshell_Breaks_MT/Musselshell_Breaks_v2/Musselshell_Breaks_v2.shp")
 
 #-------------------------------------------------------------------------------
 ## Load indicators
@@ -158,12 +157,12 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 (nightDark <- (1-nightDark))
 
 ###Aquifer vulnerability 
-(aquifer_vuln <- raster("NM_DRASTIC_270m.tif"))
+#(aquifer_vuln <- raster("NM_DRASTIC_270m.tif"))
 ###Erosion risk
-(erosion <- raster("NM_rusle_270m.tif"))
+#(erosion <- raster("NM_rusle_270m.tif"))
 
 #IBA 
-iba_nm <- load_f(paste0(data.dir, "/working/Important_Bird_Areas_nm.gpkg"))
+iba_mt <- load_f(paste0(data.dir, "/working/Important_Bird_Areas_MT.gpkg"))
 setwd("/Volumes/GoogleDrive/My Drive/00_CSP_Projects/Pew_ACEC")
 
 
