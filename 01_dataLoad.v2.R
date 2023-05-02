@@ -38,7 +38,7 @@ remove(usa, keeps)
 
 #-------------------------------------------------------------------------------
 # Load sagebrush biome; clip to west
-sb <- load_f(paste0(local.data.dir,"eco/US_Sagebrush_Biome_2019.shp")) %>% st_crop(west)
+#sb <- load_f(paste0(local.data.dir,"eco/US_Sagebrush_Biome_2019.shp")) %>% st_crop(west)
 
 
 
@@ -80,8 +80,10 @@ blmMT <- load_f(paste0(data.dir, "/working/blm_mt.shp"))
 
 #-------------------------------------------------------------------------------
 ## Load AOIs
-
-musselshell <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/Musselshell_Breaks_MT/Musselshell_Breaks_v2/Musselshell_Breaks_v2.shp")
+### Aggregate multi-part polygons
+cmr_addition <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/CMR_Sage_Grouse_Additions_MT/CMR_Sage_Grouse_Additions/CMR_Sage_Grouse_Additions.shp") %>%
+  as_Spatial() %>%
+  aggregate()
 
 #-------------------------------------------------------------------------------
 ## Load indicators
@@ -122,8 +124,6 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 
 
 # Sage & annual herb
-
-### Neither sage brush nor annual herbaceous cover layers on file extend to southern New Mexico (outside of the sagebrush biome)
 (sage <- raster("sage_270m.tif"))
 (annHerb <- raster("annHerb_270m.tif"))
 

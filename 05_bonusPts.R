@@ -5,15 +5,15 @@
 acre_in_km <- 247.105
 
 ### Get ACEC polygon
-aoisShapes <- list(otero)
+aoisShapes <- list(musselshell)
 aoisNames <- c(
-  "Otero Mesa"
+  "Musselshell Breaks"
 )
 
 a <- aoisShapes[[1]]; print(aoisNames[1])
 
 ### Retrieve the IBA shapefile for NM
-iba <- iba_nm
+iba <- iba_mt
 
 # Calculate the overlap of the IBA with the proposed ACEC 
 ibaAreaAoi <- st_as_sf(iba) %>%

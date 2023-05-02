@@ -39,19 +39,21 @@ mexico_us_canada <- countries %>%
 
 ### Set indicator 
 (intact <- raster("intactNorm.tif"))
-(ecoRar <- raster("ecorarityaggto270norm.tif"))
 (climStab <- raster("ClimStabNorm.tif"))
 (connect <- raster("connNorm.tif"))
+(sage <- raster("sage_270m.tif"))
+
 
 
 ### Threat rasters -- slightly different projection issues 
 (oilGas <- raster("oilgas5k6cellmean270mnorm_PAs0UrbH20.tif"))
 (geotherm <- raster("geotherm_lt10pslop_nourbFWPAspldist.tif"))
 (annHerb <- raster("annHerb_270m.tif"))
+(wind <- raster("windprobi_lt30pslope_ddpowerline4normPAs0UrbH20MULT.tif"))
 
 sb <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/working/US_Sagebrush_Biome_2019.shp")
 ###
- ind <- rast(oilGas)
+ind <- rast(wind)
 # ind_fix <- terra::project(ind, rast(intact))
 # ind <- ind_fix
  
@@ -81,6 +83,9 @@ my_lims <- c(0,1)
 ### Masking some threat rasters 
 ind <- mask(ind, vect(st_transform(states, crs=st_crs(ind))))
 
+### Mask to sb biome if necessary 
+#ind <- mask(ind, vect(st_transform(sb, crs=st_crs(ind))))
+
 ### Westwide plot with state boundaries and the AOI highlighted in red with a bounding box
 (big <- ggplot() +
   geom_spatraster_rgb(data=x_terra_masked, maxcell =5e+05) + 
@@ -92,7 +97,7 @@ ind <- mask(ind, vect(st_transform(states, crs=st_crs(ind))))
     oob = scales::oob_squish_any
   ) + 
   geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-  geom_sf(data=st_as_sf(aoisShapes[[1]]), fill=NA, col="red", lwd=0.5) + 
+  #geom_sf(data=st_as_sf(aoisShapes[[1]]), fill=NA, col="red", lwd=0.25) + 
   geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
   geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
   coord_sf(crs=5070,
@@ -100,9 +105,9 @@ ind <- mask(ind, vect(st_transform(states, crs=st_crs(ind))))
            ylim = c(st_bbox(states)[2], st_bbox(states)[4]),
            expand = F) +
    #annotation_scale() +
-   # annotation_north_arrow(which_north = "grid",
-   #                        pad_x = unit(0.1, "in"), pad_y = unit(0.2, "in"),
-   #                        style = north_arrow_fancy_orienteering) +
+   #annotation_north_arrow(which_north = "grid",
+   #                       pad_x = unit(0.1, "in"), pad_y = unit(0.2, "in"),
+    #                       style = north_arrow_fancy_orienteering) +
   theme_void() + 
   theme(legend.position="none",
         panel.background = element_rect(fill = "lightblue",
@@ -114,9 +119,8 @@ x_diff <- st_bbox(states)[3]-st_bbox(states)[1]
 y_to_x_ratio <- y_diff/x_diff
 
 # 
-# ggsave("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_amph_richness_west.png", big, width=5.75, h=4.5, units='in', dpi=300)
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/musselshell_breaks/musselshell_annHerb_west_noscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/cmr_sagegrouse_additions/cmr_wind_west_noscale.pdf"
 
 ggsave(
   pdf_file,
@@ -146,7 +150,7 @@ y_diff <- st_bbox(aoi_5070)[4]-st_bbox(aoi_5070)[2]
 y_add <- 1.17*x_diff
 
 ###oob = scales::oob_squish_any ### Can be added if you wnt to fiddle with visualization scales -- squishes any oob values down to max value
-zoom <- ggplot() +
+(zoom <- ggplot() +
   #geom_sf(data=mexico_us_canada  , fill="darkgray", lwd=0.6) + 
   geom_spatraster(data = cropped_rast) + 
   scale_fill_whitebox_c(
@@ -156,13 +160,13 @@ zoom <- ggplot() +
     oob = scales::oob_squish_any
   ) + 
   geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-  geom_sf(data=st_as_sf(aoisShapes[[1]]), fill=NA, col="red", lwd=1.2) + 
+  geom_sf(data=st_as_sf(aoisShapes[[1]]), fill=NA, col="red", lwd=1) + 
   coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
-           ylim = c(2736810, (2736810+y_add)),### Add adjustment factor to ymax
+           ylim = c(2787752.1, (2787752.1+y_add)),### Add adjustment factor to ymax
            expand = T,
            crs=5070
   ) +
-  annotation_scale(text_col="white") + 
+  #annotation_scale(text_col="black") + 
   scale_x_continuous(expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) + 
   theme_void() +
@@ -170,12 +174,12 @@ zoom <- ggplot() +
         panel.background = element_rect(fill = "lightblue",
                                         colour = "lightblue"),
         panel.grid=element_blank(),
-        panel.border=element_blank())
+        panel.border=element_blank()))
 
 
 
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/musselshell_breaks/musselshell_zoom_oilGas_wscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/cmr_sagegrouse_additions/cmr_wind_zoom_noscale.pdf"
 
 ggsave(
   pdf_file,
