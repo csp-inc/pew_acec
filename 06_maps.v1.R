@@ -41,6 +41,10 @@ mexico_us_canada <- countries %>%
 (rept <- raster("rept_west_270m.tif"))
 (amph <- raster("amph_west_270m.tif")) 
 (connect <- raster("connNorm.tif"))
+(intact <- raster("intactNorm.tif"))
+(geoDiv <- raster("div_ergo_lth270mnorm.tif"))
+(climStab <- raster("ClimStabNorm.tif"))
+(waterFut <- raster("wateruseddwaterdist2norm.tif"))
 
 
 ### Threat rasters -- slightly different projection issues 
@@ -49,12 +53,18 @@ mexico_us_canada <- countries %>%
 (wind <- raster("windprobi_lt30pslope_ddpowerline4normPAs0UrbH20MULT.tif"))
 
 
- ind <- rast(rept)
- ind_fix <- terra::project(ind, rast(mamm))
- ind <- ind_fix
+ ind <- rast(geoDiv)
+# ind_fix <- terra::project(ind, rast(mamm))
+# ind <- ind_fix
+ 
+re2 <- extend(ind, c(3000, 1000))
+ 
+ 
+ ### Setting basemap defaults - for some reason supplying a raster helps to control the resolution that gets funky when plotting -- supply with the indicator raster 
+
 
 ### Setting basemap defaults - for some reason supplying a raster helps to control the resolution that gets funky when plotting -- supply with the indicator raster 
-set_defaults(rast(ind), map_service = "esri", map_type = "world_hillshade")
+set_defaults(rast(re2), map_service = "esri", map_type = "world_hillshade")
 
 ### Get the basemap as a raster 
 x <- basemaps::basemap_raster(map_service = "esri", map_type = "world_hillshade", map_res=1)
@@ -71,44 +81,134 @@ countries_plotting <- crop(vect(mexico_us_canada), x_terra_masked) %>%
 ### Get min and max of raster values to maintain scales across both plots 
 ### Sometimes works...sometimes doesn't for reasons unknown to me - 
 my_lims <- minmax(ind) %>% as.integer()
-#my_lims <- c(0,0.5)
+#my_lims <- c(0, 1)
 
 ### Westwide plot with state boundaries and the AOI highlighted in red with a bounding box
-(big <- ggplot() +
-  geom_spatraster_rgb(data=x_terra_masked) + 
-  geom_spatraster(data = ind) + 
-  scale_fill_whitebox_c(
-    palette = "viridi",
-    na.value = NA,
-    limits=my_lims
-    #oob = scales::oob_squish_any
-  ) + 
-  geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-  geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=0.5) + 
-  geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
-  geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
-  coord_sf(crs=5070,
-           xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
-           ylim = c(st_bbox(states)[2], st_bbox(states)[4]),
-           expand = F) +
-   annotation_scale() +
+
+### Set up several plotting functions to make things more streamlined
+west_wide_map_wscale <- function(ind){
+  big <- ggplot() +
+    geom_spatraster_rgb(data=x_terra_masked) + 
+    geom_spatraster(data = ind) + 
+    scale_fill_whitebox_c(
+      palette = "viridi",
+      na.value = NA,
+      limits=my_lims
+      #oob = scales::oob_squish_any
+    ) + 
+    geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
+    geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=0.5) + 
+    geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
+    geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
+    coord_sf(crs=5070,
+             xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
+             ylim = c(st_bbox(states)[2], st_bbox(states)[4]),
+             expand = F) +
+    annotation_scale() +
     annotation_north_arrow(which_north = "grid",
                            pad_x = unit(0.1, "in"), pad_y = unit(0.2, "in"),
                            style = north_arrow_fancy_orienteering) +
-  theme_void() + 
-  theme(legend.position="none",
-        panel.background = element_rect(fill = "lightblue",
-                                        colour = "lightblue")
-        )) 
-  
+    theme_void() + 
+    theme(legend.position="none",
+          panel.background = element_rect(fill = "lightblue",
+                                          colour = "lightblue")
+    )
+  return(big)
+}
+west_wide_map_wscale_squishlims <- function(ind){
+  big <- ggplot() +
+    geom_spatraster_rgb(data=x_terra_masked) + 
+    geom_spatraster(data = ind) + 
+    scale_fill_whitebox_c(
+      palette = "viridi",
+      na.value = NA,
+      limits=my_lims,
+      oob = scales::oob_squish_any
+    ) + 
+    geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
+    geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=0.5) + 
+    geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
+    geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
+    coord_sf(crs=5070,
+             xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
+             ylim = c(st_bbox(states)[2], st_bbox(states)[4]),
+             expand = F) +
+    annotation_scale() +
+    annotation_north_arrow(which_north = "grid",
+                           pad_x = unit(0.1, "in"), pad_y = unit(0.2, "in"),
+                           style = north_arrow_fancy_orienteering) +
+    theme_void() + 
+    theme(legend.position="none",
+          panel.background = element_rect(fill = "lightblue",
+                                          colour = "lightblue")
+    )
+  return(big)
+}
+
+west_wide_map_noscale <- function(ind){
+  big <- ggplot() +
+    geom_spatraster_rgb(data=x_terra_masked) + 
+    geom_spatraster(data = ind) + 
+    scale_fill_whitebox_c(
+      palette = "viridi",
+      na.value = NA,
+      limits=my_lims
+      #oob = scales::oob_squish_any
+    ) + 
+    geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
+    geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=0.5) + 
+    geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
+    geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
+    coord_sf(crs=5070,
+             xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
+             ylim = c(st_bbox(states)[2], st_bbox(states)[4]),
+             expand = F) +
+    theme_void() + 
+    theme(legend.position="none",
+          panel.background = element_rect(fill = "lightblue",
+                                          colour = "lightblue")
+    )
+  return(big)
+}
+west_wide_map_noscale_squishlims <- function(ind){
+  big <- ggplot() +
+    geom_spatraster_rgb(data=x_terra_masked) + 
+    geom_spatraster(data = ind) + 
+    scale_fill_whitebox_c(
+      palette = "viridi",
+      na.value = NA,
+      limits=my_lims,
+      oob = scales::oob_squish_any
+    ) + 
+    geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
+    geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=0.5) + 
+    geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
+    geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
+    coord_sf(crs=5070,
+             xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
+             ylim = c(st_bbox(states)[2], st_bbox(states)[4]),
+             expand = F) +
+    theme_void() + 
+    theme(legend.position="none",
+          panel.background = element_rect(fill = "lightblue",
+                                          colour = "lightblue")
+    )
+  return(big)
+}
+
+### Plot west wide map with or without scale
+#ind_west_scale <- west_wide_map_wscale(ind)
+ind_west_noscale <- west_wide_map_noscale(ind)
+
+### Calculate the aspect ratio of the map  
 y_diff <- st_bbox(states)[4]-st_bbox(states)[2]
 x_diff <- st_bbox(states)[3]-st_bbox(states)[1]
 y_to_x_ratio <- y_diff/x_diff
 
-# 
+# Export to PDF 
 # ggsave("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_amph_richness_west.png", big, width=5.75, h=4.5, units='in', dpi=300)
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_rept_west_scale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_geodiv_west_noscale.pdf"
 
 ggsave(
   pdf_file,
@@ -126,47 +226,133 @@ aoi_buff <- aoi_bbox %>%
   st_buffer(., 100000)
 
 ### Careful here if the raster for the indicator isn't in the exact coordinate reference system that the aoi_buff generated above   
-cropped_rast <- terra::crop(ind, vect(aoi_buff))
+
+aoi_buff_match <- aoi_buff %>%
+  st_transform(., crs=st_crs(ind))
+
+cropped_rast <- terra::crop(ind, vect(aoi_buff_match))
 
 
 ### Get the differences between the x and y lims 
 x_diff <- st_bbox(aoi_5070)[3]-st_bbox(aoi_5070)[1]
 y_diff <- st_bbox(aoi_5070)[4]-st_bbox(aoi_5070)[2]
 
-### get the adjustment factor to make this map match 'big' above 
+### get the adjustment factor to make this map match 'big' above --
 y_add <- 1.17*x_diff
 
-###oob = scales::oob_squish_any ### Can be added if you wnt to fiddle with visualization scales -- squishes any oob values down to max value
-zoom <- ggplot() +
-  geom_sf(data=mexico_us_canada  , fill="darkgray", lwd=0.6) + 
-  geom_spatraster(data = cropped_rast) + 
-  scale_fill_whitebox_c(
-    palette = "viridi",
-    na.value = NA,
-    limits=my_lims
-    #oob = scales::oob_squish_any
-  ) + 
-  geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-  geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
-  coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
-           ylim = c(1036512, (1036512+y_add)),### Add adjustment factor to ymax
-           expand = T,
-           crs=5070
-  ) +
-  annotation_scale() + 
-  scale_x_continuous(expand = c(0,0)) + 
-  scale_y_continuous(expand = c(0,0)) + 
-  theme_void() +
-  theme(legend.position="none",
-        panel.background = element_rect(fill = "lightblue",
-                                        colour = "lightblue"),
-        panel.grid=element_blank(),
-        panel.border=element_blank())
+##manually adjust the x and y lims in this function to match desired AOI
+zoom_map_wscale <- function(cropped_rast){
+  zoom <- ggplot() +
+    geom_sf(data=mexico_us_canada  , fill="darkgray", lwd=0.6) + 
+    geom_spatraster(data = cropped_rast) + 
+    scale_fill_whitebox_c(
+      palette = "viridi",
+      na.value = NA,
+      limits=my_lims) + 
+    geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
+    geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
+    coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
+             ylim = c(1036512, (1036512+y_add)),### Add adjustment factor to ymax
+             expand = T,
+             crs=5070
+    ) +
+    annotation_scale() + 
+    scale_x_continuous(expand = c(0,0)) + 
+    scale_y_continuous(expand = c(0,0)) + 
+    theme_void() +
+    theme(legend.position="none",
+          panel.background = element_rect(fill = "lightblue",
+                                          colour = "lightblue"),
+          panel.grid=element_blank(),
+          panel.border=element_blank())
+}
+zoom_map_wscale_squishlims <- function(cropped_rast){
+  zoom <- ggplot() +
+    geom_sf(data=mexico_us_canada  , fill="darkgray", lwd=0.6) + 
+    geom_spatraster(data = cropped_rast) + 
+    scale_fill_whitebox_c(
+      palette = "viridi",
+      na.value = NA,
+      limits=my_lims,
+      oob = scales::oob_squish_any
+      ) + 
+    geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
+    geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
+    coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
+             ylim = c(1036512, (1036512+y_add)),### Add adjustment factor to ymax
+             expand = T,
+             crs=5070
+    ) +
+    annotation_scale() + 
+    scale_x_continuous(expand = c(0,0)) + 
+    scale_y_continuous(expand = c(0,0)) + 
+    theme_void() +
+    theme(legend.position="none",
+          panel.background = element_rect(fill = "lightblue",
+                                          colour = "lightblue"),
+          panel.grid=element_blank(),
+          panel.border=element_blank())
+}
+
+### Mapping functions for zoom in map
+zoom_map_noscale <- function(cropped_rast){
+  zoom <- ggplot() +
+    geom_sf(data=mexico_us_canada  , fill="darkgray", lwd=0.6) + 
+    geom_spatraster(data = cropped_rast) + 
+    scale_fill_whitebox_c(
+      palette = "viridi",
+      na.value = NA,
+      limits=my_lims) + 
+    geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
+    geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
+    coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
+             ylim = c(1036512, (1036512+y_add)),### Add adjustment factor to ymax
+             expand = T,
+             crs=5070
+    ) +
+    scale_x_continuous(expand = c(0,0)) + 
+    scale_y_continuous(expand = c(0,0)) + 
+    theme_void() +
+    theme(legend.position="none",
+          panel.background = element_rect(fill = "lightblue",
+                                          colour = "lightblue"),
+          panel.grid=element_blank(),
+          panel.border=element_blank())
+}
+zoom_map_noscale_squishlims <- function(cropped_rast){
+  zoom <- ggplot() +
+    geom_sf(data=mexico_us_canada  , fill="darkgray", lwd=0.6) + 
+    geom_spatraster(data = cropped_rast) + 
+    scale_fill_whitebox_c(
+      palette = "viridi",
+      na.value = NA,
+      limits=my_lims,
+      scales::oob_squish_any
+      ) + 
+    geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
+    geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
+    coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
+             ylim = c(1036512, (1036512+y_add)),### Add adjustment factor to ymax
+             expand = T,
+             crs=5070
+    ) +
+    scale_x_continuous(expand = c(0,0)) + 
+    scale_y_continuous(expand = c(0,0)) + 
+    theme_void() +
+    theme(legend.position="none",
+          panel.background = element_rect(fill = "lightblue",
+                                          colour = "lightblue"),
+          panel.grid=element_blank(),
+          panel.border=element_blank())
+}
+
+### Plot zoom map with or without scale/squishlims
+#(zoom <- zoom_map_wscale(cropped_rast))
+(zoom <- zoom_map_noscale(cropped_rast))
 
 
-
-
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_rept_zoom_scale.pdf"
+# Export to PDF 
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_geodiv_zoom_noscale.pdf"
 
 ggsave(
   pdf_file,
