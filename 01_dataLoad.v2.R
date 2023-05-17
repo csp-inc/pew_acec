@@ -79,7 +79,7 @@ blmWest <- load_f(paste0(data.dir, "/working/blm_west.shp"))
 blmMT <- load_f(paste0(data.dir, "/working/blm_mt.shp"))
 
 #-------------------------------------------------------------------------------
-## Load AOIs
+## Load AOIs - change path to match source of ACEC shapefile
 
 musselshell <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/Musselshell_Breaks_MT/Musselshell_Breaks_v2/Musselshell_Breaks_v2.shp")
 
