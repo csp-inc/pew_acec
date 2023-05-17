@@ -14,7 +14,7 @@ The workflow is as follows, and scripts must be run in this order:
 `05_bonusPts.R` - generates summary statistics that are unique to specific candidate ACECs (e.g., contribution to Important Bird Areas)</br>
 
 <sup>1</sup> User must modify both working directory and input/outputs in lines 7-10. </br>
-<sup>2</sup> User must temporarily change working directory to data folder in line 89 then back in line 167.</br>
+<sup>2</sup> User must temporarily change working directory to data folder in line 88 then back in line 166.</br>
 <sup>3</sup> User must modify csv name in line 12 to reflect date and version generated in script 03.</br>
 <sup>4</sup> User must also turn on/off ACEC and iteratively turn on/off the spatial domain of interest in lines 108-118.</br>
 _Nb there is no script 02, as it was discontinued early in project._</br>
