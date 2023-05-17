@@ -10,6 +10,13 @@ library(rnaturalearth)
 library(knitr)
 library(tinytex)
 
+### Get the aoisShapes object
+
+aoisShapes <- list(frenchmans)
+aoisNames <- c(
+  "Frenchman's Breaks"
+)
+
 ### Set WD to data directory for sourcing 
 setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/working")
 
@@ -54,7 +61,7 @@ mexico_us_canada <- countries %>%
 
 sb <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/working/US_Sagebrush_Biome_2019.shp")
 ###
-ind <- rast(intact)
+ind <- rast(climAcc)
 # ind_fix <- terra::project(ind, rast(intact))
 # ind <- ind_fix
  
@@ -79,7 +86,7 @@ countries_plotting <- crop(vect(mexico_us_canada), x_terra_masked) %>%
 ### Get min and max of raster values to maintain scales across both plots 
 ### Sometimes works...sometimes doesn't for reasons unknown to me - 
 #my_lims <- minmax(ind, na.rm=T) %>% as.integer()
-my_lims <- c(0,1)
+my_lims <- c(0, 1)
 
 ### Masking some threat rasters 
 ind <- mask(ind, vect(st_transform(states, crs=st_crs(ind))))
@@ -125,7 +132,7 @@ west_wide_map_wscale_squishlims <- function(ind){
     ) + 
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
     #geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
+    geom_sf(data=aoi_bbox, fill=NA, col="#d95a6d", lwd=0.6) + 
     geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
     coord_sf(crs=5070,
              xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
@@ -155,7 +162,7 @@ west_wide_map_noscale <- function(ind){
     ) + 
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
     #geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
+    geom_sf(data=aoi_bbox, fill=NA, col="#d95a6d", lwd=0.6) + 
     geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
     coord_sf(crs=5070,
              xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
@@ -180,7 +187,7 @@ west_wide_map_noscale_squishlims <- function(ind){
     ) + 
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
     #geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
+    geom_sf(data=aoi_bbox, fill=NA, col="#d95a6d", lwd=0.6) + 
     geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
     coord_sf(crs=5070,
              xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
@@ -195,8 +202,9 @@ west_wide_map_noscale_squishlims <- function(ind){
 }
 
 ### Plot west wide map with or without scale
-ind_west_scale <- west_wide_map_wscale(ind)
-#ind_west_noscale <- west_wide_map_noscale(ind)
+#ind_west_scale_squish <- west_wide_map_wscale_squishlims(ind)
+#ind_west_scale <- west_wide_map_wscale(ind)
+ind_west_noscale <- west_wide_map_noscale(ind)
   
 y_diff <- st_bbox(states)[4]-st_bbox(states)[2]
 x_diff <- st_bbox(states)[3]-st_bbox(states)[1]
@@ -205,7 +213,7 @@ y_to_x_ratio <- y_diff/x_diff
 # 
 # ggsave("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_amph_richness_west.png", big, width=5.75, h=4.5, units='in', dpi=300)
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/frenchman_breaks/frenchmansbreaks_west_intact_noscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/frenchman_breaks/frenchmansbreaks_west_ecoRar_scale.pdf"
 
 ggsave(
   pdf_file,
@@ -217,7 +225,12 @@ ggsave(
 
 knitr::plot_crop(pdf_file)
 
-### Zoom in 
+### Zoom in
+### Crop the raster
+aoi_buff <- aoi_bbox %>%
+  st_buffer(., 100000) %>%
+  st_transform(., crs=st_crs(ind))
+
 ### Careful here if the raster for the indicator isn't in the exact coordinate reference system that the aoi_buff generated above   
 
 aoi_buff_match <- aoi_buff %>%
@@ -245,7 +258,7 @@ zoom_map_wscale <- function(cropped_rast){
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
     geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
     coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
-             ylim = c(2736810, (2736810+y_add)),### Add adjustment factor to ymax
+             ylim = c(2904410.7, (2904410.7+y_add)),### Add adjustment factor to ymax
              expand = T,
              crs=5070
     ) +
@@ -272,7 +285,7 @@ zoom_map_wscale_squishlims <- function(cropped_rast){
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
     geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
     coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
-             ylim = c(2736810, (2736810+y_add)),### Add adjustment factor to ymax
+             ylim = c(2904410.7, (2904410.7+y_add)),### Add adjustment factor to ymax
              expand = T,
              crs=5070
     ) +
@@ -299,7 +312,7 @@ zoom_map_noscale <- function(cropped_rast){
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
     geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
     coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
-             ylim = c(2736810, (2736810+y_add)),### Add adjustment factor to ymax
+             ylim = c(2904410.7, (2904410.7+y_add)),### Add adjustment factor to ymax
              expand = T,
              crs=5070
     ) +
@@ -325,7 +338,7 @@ zoom_map_noscale_squishlims <- function(cropped_rast){
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
     geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
     coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
-             ylim = c(2736810, (2736810+y_add)),### Add adjustment factor to ymax
+             ylim = c(2904410.7, (2904410.7+y_add)),### Add adjustment factor to ymax
              expand = T,
              crs=5070
     ) +
@@ -340,10 +353,10 @@ zoom_map_noscale_squishlims <- function(cropped_rast){
 }
 
 ### Plot zoom map with or without scale/squishlims
-#(zoom <- zoom_map_wscale(cropped_rast))
-(zoom <- zoom_map_noscale(cropped_rast))
+(zoom <- zoom_map_wscale_squishlims(cropped_rast))
+#(zoom <- zoom_map_noscale(cropped_rast))
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/musselshell_breaks/musselshell_zoom_oilGas_wscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/frenchman_breaks/frenchmansbreaks_zoom_ecoRar_noscale.pdf"
 
 ggsave(
   pdf_file,

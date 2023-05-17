@@ -121,6 +121,7 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 (connect <- raster("connNorm.tif"))
 (intact <- raster("intactNorm.tif"))
 (ecoRar <- raster("ecorarityaggto270norm.tif"))
+(ecoRar <- ifel(rast(ecoRar)==1,NA, rast(ecoRar)))
 (vegDiv <- raster("gapdiv270mnorm.tif"))
 
 

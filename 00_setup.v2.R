@@ -18,7 +18,7 @@ required.packages <- c("plyr", "ggplot2", "gridExtra", "terra", "raster", "sf", 
                        "partykit", "vcd", "maps", "mgcv", "tmap",
                        "MASS", "pROC", "ResourceSelection", "caret", "broom", "boot",
                        "dismo", "gbm", "usdm", "pscl", "randomForest", "pdp", "classInt", "plotmo",
-                       "ggspatial", "lmtest",  "dynatopmodel", "spatialEco", "exactextractr", "fasterize",
+                       "ggspatial", "lmtest", "spatialEco", "exactextractr", "fasterize",
                        "chemCal")
 new.packages <- required.packages[!(required.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)>0) install.packages(new.packages, dependencies = "TRUE")
@@ -64,7 +64,6 @@ library(classInt)
 library(plotmo)
 library(ggspatial)
 library(lmtest)
-library(dynatopmodel)
 library(spatialEco)
 library(exactextractr)
 library(RColorBrewer)

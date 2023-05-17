@@ -38,8 +38,9 @@ lu <- data.frame(layer = c("amph", "bird", "mamm", "rept", "impSpp", "connect",
                               "Water availability", "Future water withdrawals",
                               "Night sky darkness"))
   
-## Link value names
-data <- data %>% left_join(lu, by = c("vn" = "layer")) 
+## Link value names - remove ecosystem rarity due to edge effects 
+data <- data %>% left_join(lu, by = c("vn" = "layer")) %>%
+  dplyr::filter(vn != "ecoRar")
 
 # Pull colors for green (Value) and red (threat) gradients
 # Source: https://colordesigner.io/gradient-generator
@@ -103,8 +104,8 @@ sel <- data %>%
           an == "Frenchman's Breaks",
          # dn == "west"
          # dn == "blmWest"
-          dn == "mt"
-         #  dn == "blmMT"
+         # dn == "mt"
+           dn == "blmMT"
          )
 
 # Order data by percentile ranks (greatest first)
@@ -150,7 +151,7 @@ p <- sel %>%
 p
 
 v <- 1
-# v <- v+1
+v <- v+1
 ggsave(paste0(out.dir, "top8_", sel$an[1], "_", sel$dn[1], "_n", sel$n[1], "_", today, "_v",v, ".png"),
        p,
        # width = 850, height = 550, units = "px")

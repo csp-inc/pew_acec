@@ -147,7 +147,7 @@ foo <- cbind(an, dn, nv, vn, av, sv.means, sv.medians, pv, cv, ev) %>% as.data.f
 foo[c(3,5:10)] <- lapply(foo[c(3,5:10)], as.numeric) # Set numbers to numbers.
 
 v <- 1
-# v <- v+1
+ v <- v+1
 # Turn on to write out file
 write.csv(foo, paste0(out.dir, "FrenchmanBreaks", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
 
