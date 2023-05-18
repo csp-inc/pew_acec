@@ -9,7 +9,7 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 
 ## Load csvs with raw results --------------------------------------------------
 
-data <- read.csv(paste0(out.dir, "FrenchmanBreaks_aoi_vs_sample_percentiles_2023-05-05_v1.csv")) %>%
+data <- read.csv(paste0(out.dir, "FrenchmanBreaks_aoi_vs_sample_percentiles_2023-05-16_v2.csv")) %>%
   dplyr::select(an, dn, nv, vn, pv)
 
 ## Assign categories/labels ----------------------------------------------------
@@ -39,8 +39,7 @@ lu <- data.frame(layer = c("amph", "bird", "mamm", "rept", "impSpp", "connect",
                               "Night sky darkness"))
   
 ## Link value names - remove ecosystem rarity due to edge effects 
-data <- data %>% left_join(lu, by = c("vn" = "layer")) %>%
-  dplyr::filter(vn != "ecoRar")
+data <- data %>% left_join(lu, by = c("vn" = "layer")) 
 
 # Pull colors for green (Value) and red (threat) gradients
 # Source: https://colordesigner.io/gradient-generator
