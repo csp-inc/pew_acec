@@ -1,7 +1,7 @@
 
 today <- paste0(Sys.Date())
 
-setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/frenchman_breaks/")
+setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/bahsahwahbee_nv/")
 
 #########################################
 ## CREATE INDICATOR FIGURES FOR REPORT ##
@@ -9,34 +9,64 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 
 ## Load csvs with raw results --------------------------------------------------
 
-data <- read.csv(paste0(out.dir, "FrenchmanBreaks_aoi_vs_sample_percentiles_2023-05-16_v2.csv")) %>%
+data <- read.csv(paste0(out.dir, "Bahsahwahbee_aoi_vs_sample_percentiles_2023-05-18_v1.csv")) %>%
   dplyr::select(an, dn, nv, vn, pv)
 
 ## Assign categories/labels ----------------------------------------------------
 
 # Assign value/threat
-threats <- c("annHerb", "geotherm", "wind", "solar", "mineral", "oilGas", "waterFut")
+threats <- c("annHerb", "geotherm", "wind", "solar", "mineral",  "waterFut")
 data <- data %>%
   mutate(type = ifelse(vn %in% threats, "threat", "value"))
 
 # Assign full labels
-lu <- data.frame(layer = c("amph", "bird", "mamm", "rept", "impSpp", "connect",
-                           "intact", "ecoRar", "vegDiv", "sage", "annHerb",
-                           "climAcc", "climStab", "geoDiv", "geoRar",
-                           "geotherm", "oilGas", "mineral", "solar", "wind",
-                           "waterAvail", "waterFut", "nightDark"),
-                 variable = c("Amphibian species richness", "Bird species richness",
-                              "Mammal species richness", "Reptile species richness",
-                              "Imperiled species richness", "Ecological connectivity",
-                              "Ecological intactness", "Ecosystem rarity",
-                              "Vegetation diversity", "Percent sagebrush cover",
-                              "Percent annual herbaceous cover", "Climate accessibility",
-                              "Climate stability", "Geophysical diversity",
-                              "Geophysical rarity", "Geothermal resource potential",
-                              "Oil and gas resource potential", "Mineral resource potential",
-                              "Solar resource potential", "Wind resource potential",
-                              "Water availability", "Future water withdrawals",
-                              "Night sky darkness"))
+lu <-
+  data.frame(
+    layer = c(
+      "amph",
+      "bird",
+      "mamm",
+      "rept",
+      "impSpp",
+      "connect",
+      "intact",
+      "ecoRar",
+      "vegDiv",
+      "sage",
+      "annHerb",
+      "climAcc",
+      "climStab",
+      "geotherm",
+      "mineral",
+      "solar",
+      "wind",
+      "waterAvail",
+      "waterFut",
+      "nightDark"
+    ),
+    variable = c(
+      "Amphibian species richness",
+      "Bird species richness",
+      "Mammal species richness",
+      "Reptile species richness",
+      "Imperiled species richness",
+      "Ecological connectivity",
+      "Ecological intactness",
+      "Ecosystem rarity",
+      "Vegetation diversity",
+      "Percent sagebrush cover",
+      "Percent annual herbaceous cover",
+      "Climate accessibility",
+      "Climate stability",
+      "Geothermal resource potential",
+      "Mineral resource potential",
+      "Solar resource potential",
+      "Wind resource potential",
+      "Water availability",
+      "Future water withdrawals",
+      "Night sky darkness"
+    )
+  )
   
 ## Link value names - remove ecosystem rarity due to edge effects 
 data <- data %>% left_join(lu, by = c("vn" = "layer")) 
@@ -100,11 +130,11 @@ col_threat <- c("#c81e43", #dark red
 # Filter data to given AOI and sampling domain
 sel <- data %>%
   filter(
-          an == "Frenchman's Breaks",
+          an == "Bahsahwahbee",
          # dn == "west"
          # dn == "blmWest"
-         # dn == "mt"
-           dn == "blmMT"
+          dn == "nv"
+         #  dn == "blmNV"
          )
 
 # Order data by percentile ranks (greatest first)
@@ -150,7 +180,7 @@ p <- sel %>%
 p
 
 v <- 1
-v <- v+1
+#v <- v+1
 ggsave(paste0(out.dir, "top8_", sel$an[1], "_", sel$dn[1], "_n", sel$n[1], "_", today, "_v",v, ".png"),
        p,
        # width = 850, height = 550, units = "px")
