@@ -29,8 +29,8 @@ usa <- load_f(paste0(data.dir, "/working/tl_2012_us_state.shp"))
 keeps <- c("Washington", "Oregon", "California", "Idaho", "Montana",
            "Wyoming", "Nevada", "Utah", "Colorado", "Arizona", "New Mexico")
 west <- usa %>% filter(NAME %in% keeps)
-mt <- usa %>% filter(NAME == "Montana") %>% as_Spatial() 
-mtArea <- terra::area(mt) %>% sum()/1000000
+nv <- usa %>% filter(NAME == "Nevada") %>% as_Spatial() 
+nvArea <- terra::area(nv) %>% sum()/1000000
 remove(usa, keeps)
 
 
@@ -76,12 +76,12 @@ remove(usa, keeps)
 
 
 blmWest <- load_f(paste0(data.dir, "/working/blm_west.shp"))
-blmMT <- load_f(paste0(data.dir, "/working/blm_mt.shp"))
+blmNV <- load_f(paste0(data.dir, "/working/blm_nv.gpkg"))
 
 #-------------------------------------------------------------------------------
 ## Load AOIs
 
-frenchmans <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/Frenchman_Breaks_Expansion_MT/Frenchman_Breaks_Expansion/Frenchman_Breaks_Expansion.shp") %>%
+bahsahwahbee <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/Bahsahwahbee_NV/BahsahwahbeeNM110822.shp") %>%
   as_Spatial() %>%
   aggregate() %>%
   st_as_sf()
@@ -160,14 +160,6 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 (nightDark <- raster("virrs2011.tif"))
 (nightDark <- (1-nightDark))
 
-###Aquifer vulnerability 
-#(aquifer_vuln <- raster("NM_DRASTIC_270m.tif"))
-###Erosion risk
-#(erosion <- raster("NM_rusle_270m.tif"))
-
-#IBA 
-iba_mt <- load_f(paste0(data.dir, "/working/Important_Bird_Areas_MT.gpkg"))
-setwd("/Volumes/GoogleDrive/My Drive/00_CSP_Projects/Pew_ACEC")
 
 
 # ------------------------------------------------------------------------------

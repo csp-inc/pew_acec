@@ -7,7 +7,7 @@
 setwd("/Volumes/GoogleDrive/My Drive/00_CSP_Projects/Pew_ACEC")
 wd <- "/Volumes/GoogleDrive/My Drive/00_CSP_Projects/Pew_ACEC"
 data.dir <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data"
-out.dir <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/frenchman_breaks/" # before running analysis create the output folder
+out.dir <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/bahsahwahbee_nv/" # before running analysis create the output folder
 
 
 

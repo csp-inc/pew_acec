@@ -13,27 +13,27 @@ today <- paste0(Sys.Date())
 
 varsRasters <- list(amph, bird, mamm, rept, impSpp, connect,
                     intact, ecoRar, vegDiv, sage, annHerb,
-                    climAcc, climStab, geoDiv, geoRar,
-                    geotherm, oilGas, mineral, solar, wind,
+                    climAcc, climStab, 
+                    geotherm, mineral, solar, wind,
                     waterAvail, waterFut, nightDark)
 
 
 namesRasters <- c("amph", "bird", "mamm", "rept", "impSpp", "connect",
                   "intact", "ecoRar", "vegDiv", "sage", "annHerb",
-                  "climAcc", "climStab", "geoDiv", "geoRar",
-                  "geotherm", "oilGas", "mineral", "solar", "wind",
+                  "climAcc", "climStab", 
+                  "geotherm", "mineral", "solar", "wind",
                   "waterAvail", "waterFut", "nightDark")
 
 ## Domain selection -----------------------------------------------------------
 
 domains <- list(st_as_sf(west),
                 blmWest,
-                st_as_sf(mt),
-                blmMT)
+                st_as_sf(nv),
+                blmNV)
 dNames <- c("west",
             "blmWest",
-            "mt",
-            "blmMT")
+            "nv",
+            "blmNV")
 
 
 ## Sample size selection to match domains -------------------------------------
@@ -44,9 +44,9 @@ ns <- c(2000, 2000, 500, 500)
 
 ## AOI selection --------------------------------------------------------------
 
-aoisShapes <- list(frenchmans)
+aoisShapes <- list(bahsahwahbee)
 aoisNames <- c(
-  "Frenchman's Breaks"
+  "Bahsahwahbee"
 )
 
 
@@ -147,9 +147,9 @@ foo <- cbind(an, dn, nv, vn, av, sv.means, sv.medians, pv, cv, ev) %>% as.data.f
 foo[c(3,5:10)] <- lapply(foo[c(3,5:10)], as.numeric) # Set numbers to numbers.
 
 v <- 1
- v <- v+1
+#v <- v+1
 # Turn on to write out file
-write.csv(foo, paste0(out.dir, "FrenchmanBreaks", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
+write.csv(foo, paste0(out.dir, "Bahsahwahbee", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
 
 
 
