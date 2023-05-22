@@ -15,26 +15,25 @@ varsRasters <- list(amph, bird, mamm, rept, impSpp, connect,
                     intact, ecoRar, vegDiv, sage, annHerb,
                     climAcc, climStab, geoDiv, geoRar,
                     geotherm, oilGas, mineral, solar, wind,
-                    waterAvail, waterFut, nightDark, aquifer_vuln, erosion)
+                    waterAvail, waterFut, nightDark)
 
 
 namesRasters <- c("amph", "bird", "mamm", "rept", "impSpp", "connect",
                   "intact", "ecoRar", "vegDiv", "sage", "annHerb",
                   "climAcc", "climStab", "geoDiv", "geoRar",
                   "geotherm", "oilGas", "mineral", "solar", "wind",
-                  "waterAvail", "waterFut", "nightDark", "aquifer_vuln", "erosion")
+                  "waterAvail", "waterFut", "nightDark")
 
 ## Domain selection -----------------------------------------------------------
 
 domains <- list(st_as_sf(west),
                 blmWest,
-                st_as_sf(nm),
-                blmNM)
+                st_as_sf(mt),
+                blmMT)
 dNames <- c("west",
             "blmWest",
-            "nm",
-            "blmNM")
-
+            "mt",
+            "blmMT")
 
 ## Sample size selection to match domains -------------------------------------
 
@@ -44,9 +43,9 @@ ns <- c(2000, 2000, 500, 500)
 
 ## AOI selection --------------------------------------------------------------
 
-aoisShapes <- list(otero)
+aoisShapes <- list(musselshell)
 aoisNames <- c(
-  "Otero Mesa"
+  "Musselshell Breaks"
 )
 
 
@@ -149,7 +148,7 @@ foo[c(3,5:10)] <- lapply(foo[c(3,5:10)], as.numeric) # Set numbers to numbers.
 v <- 2
 # v <- v+1
 # Turn on to write out file
-#write.csv(foo, paste0(out.dir, "OteroMesa", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
+#write.csv(foo, paste0(out.dir, "MusselshellBreaks", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
 
 
 

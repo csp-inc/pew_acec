@@ -1,7 +1,7 @@
 
 today <- paste0(Sys.Date())
 
-setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/")
+setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/musselshell_breaks/")
 
 #########################################
 ## CREATE INDICATOR FIGURES FOR REPORT ##
@@ -9,7 +9,7 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 
 ## Load csvs with raw results --------------------------------------------------
 
-data <- read.csv(paste0(out.dir, "OteroMesa_aoi_vs_sample_percentiles_2023-03-28_v2.csv")) %>%
+data <- read.csv(paste0(out.dir, "MusselshellBreaks_aoi_vs_sample_percentiles_2023-04-27_v1.csv")) %>%
   dplyr::select(an, dn, nv, vn, pv)
 
 ## Assign categories/labels ----------------------------------------------------
@@ -24,7 +24,7 @@ lu <- data.frame(layer = c("amph", "bird", "mamm", "rept", "impSpp", "connect",
                            "intact", "ecoRar", "vegDiv", "sage", "annHerb",
                            "climAcc", "climStab", "geoDiv", "geoRar",
                            "geotherm", "oilGas", "mineral", "solar", "wind",
-                           "waterAvail", "waterFut", "nightDark", "aquifer_vuln", "erosion"),
+                           "waterAvail", "waterFut", "nightDark"),
                  variable = c("Amphibian species richness", "Bird species richness",
                               "Mammal species richness", "Reptile species richness",
                               "Imperiled species richness", "Ecological connectivity",
@@ -36,18 +36,11 @@ lu <- data.frame(layer = c("amph", "bird", "mamm", "rept", "impSpp", "connect",
                               "Oil and gas resource potential", "Mineral resource potential",
                               "Solar resource potential", "Wind resource potential",
                               "Water availability", "Future water withdrawals",
-                              "Night sky darkness", "Aquifer vulnerability", "Erosion potential"))
+                              "Night sky darkness"))
 
-## Remove annual herbaceous cover and sagebrush cover as these layers do not extend to the Otero Mesa ACEC area 
-data <- data %>% left_join(lu, by = c("vn" = "layer")) %>%
-  dplyr::filter(!vn %in% c("annHerb", "sage"))
+## 
+data <- data %>% left_join(lu, by = c("vn" = "layer")) 
 
-### Also remove aquifer vulnerability and erosion potential for West-wide and BLM West-wide comparisons as the layers pertain only to NM
-data <- data %>% 
-  dplyr::mutate(dn_vn = paste(dn, vn, sep="_")) %>%
-  dplyr::filter(!dn_vn %in% c('west_aquifer_vuln', 'blmWest_aquifer_vuln', 
-                              'west_erosion', 'blmWest_erosion')) %>%
-  dplyr::select(-dn_vn)
   
 # Pull colors for green (Value) and red (threat) gradients
 # Source: https://colordesigner.io/gradient-generator
@@ -108,13 +101,11 @@ col_threat <- c("#c81e43", #dark red
 # Filter data to given AOI and sampling domain
 sel <- data %>%
   filter(
-         # an == "Little Sandy",
-         # an == "Red Desert",
-         an == "Otero Mesa",
-         # dn == "west"
+         an == "Musselshell Breaks",
+          dn == "west"
          # dn == "blmWest"
-         # dn == "nm"
-           dn == "blmNM"
+         # dn == "mt"
+         #  dn == "blmMT"
          )
 
 # Order data by percentile ranks (greatest first)

@@ -38,7 +38,7 @@ remove(usa, keeps)
 
 #-------------------------------------------------------------------------------
 # Load sagebrush biome; clip to west
-sb <- load_f(paste0(local.data.dir,"eco/US_Sagebrush_Biome_2019.shp")) %>% st_crop(west)
+#sb <- load_f(paste0(local.data.dir,"eco/US_Sagebrush_Biome_2019.shp")) %>% st_crop(west)
 
 
 
@@ -155,11 +155,6 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 ### Night sky darkness is presented originally as 0=dark 1=brightest -- invert raster to assign high values to darker areas
 (nightDark <- raster("virrs2011.tif"))
 (nightDark <- (1-nightDark))
-
-###Aquifer vulnerability 
-#(aquifer_vuln <- raster("NM_DRASTIC_270m.tif"))
-###Erosion risk
-#(erosion <- raster("NM_rusle_270m.tif"))
 
 #IBA 
 iba_mt <- load_f(paste0(data.dir, "/working/Important_Bird_Areas_MT.gpkg"))
