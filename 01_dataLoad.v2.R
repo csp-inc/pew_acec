@@ -81,7 +81,7 @@ blmNV <- load_f(paste0(data.dir, "/working/blm_nv.gpkg"))
 #-------------------------------------------------------------------------------
 ## Load AOIs
 
-bahsahwahbee <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/Bahsahwahbee_NV/BahsahwahbeeNM110822.shp") %>%
+fishlake_volcanic_sump <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/FishLakeSumpVolcanic_NV/FishLakeSumpVolcanicHills_combined.gpkg") %>%
   as_Spatial() %>%
   aggregate() %>%
   st_as_sf()
