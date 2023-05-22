@@ -12,9 +12,9 @@ library(tinytex)
 
 ### Get the aoisShapes object
 
-aoisShapes <- list(frenchmans)
+aoisShapes <- list(bahsahwahbee)
 aoisNames <- c(
-  "Frenchman's Breaks"
+  "Bahsahwahbee"
 )
 
 ### Set WD to data directory for sourcing 
@@ -45,16 +45,18 @@ mexico_us_canada <- countries %>%
   dplyr::filter(admin%in%c("United States of America", "Canada", "Mexico")) 
 
 ### Set indicator 
-(intact <- raster("intactNorm.tif"))
 (connect <- raster("connNorm.tif"))
+(impSpp <- raster("impSppNorm.tif")) ; crs(impSpp) <- proj.crs
+(vegDiv <- raster("gapdiv270mnorm.tif"))
+(mamm <- raster("mamm_west_270m.tif"))
+
 
 (climStab <- raster("ClimStabNorm.tif"))
 (climAcc <- raster("ClimAccNorm.tif"))
 
 
 ### Threat rasters -- slightly different projection issues 
-(oilGas <- raster("oilgas5k6cellmean270mnorm_PAs0UrbH20.tif"))
-(geotherm <- raster("geotherm_lt10pslop_nourbFWPAspldist.tif"))
+(mineral <- raster("mrdsPA5kmeanmnormPAs0UrbH20.tif"))
 (wind <- raster("windprobi_lt30pslope_ddpowerline4normPAs0UrbH20MULT.tif"))
 (solar <- raster("maxdnighi_lt5pslope_ddpowerline4normPAs0UrbH20.tif"))
 
@@ -63,7 +65,11 @@ sb <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml
 
 
 ### Swap out indicator of interest 
-ind <- rast(geotherm)
+ind <- rast(solar)
+
+### Calculate 2nd and 98th quantile for visualization params 
+(qr <- global(ind, \(i) quantile(i, c(0.02, 0.98), na.rm=T)))
+
 # ind_fix <- terra::project(ind, rast(intact))
 # ind <- ind_fix
  
@@ -85,22 +91,20 @@ countries_plotting <- crop(vect(mexico_us_canada), x_terra_masked) %>%
   st_as_sf() %>%
   st_transform(., crs=5070)
 
-canada <- countries_plotting %>%
-  filter(name=="Canada")
-
 ### Get min and max of raster values to maintain scales across both plots 
 ### Sometimes works...sometimes doesn't for reasons unknown to me - 
 #my_lims <- minmax(ind, na.rm=T) %>% as.integer()
 
-my_lims <- c(0, 0.15)
+### Alternative - use the 2nd and 98th percentile as min and max to improve visualization
+my_lims <- c(0, 0.9009585)
 
 ### Masking some threat rasters 
 ind <- mask(ind, vect(st_transform(states, crs=st_crs(ind))))
 ### Set up several plotting functions to make things more streamlined
-west_wide_map_wscale <- function(ind, color.palette, aoi.bbox.fill, scale.text.col){
+west_wide_map_wscale <- function(ind, color.palette, aoi.bbox.fill, aoi.bbox.stroke, scale.text.col){
   big <- ggplot() +
     geom_spatraster_rgb(data=x_terra_masked) + 
-    geom_spatraster(data = ind) + 
+    geom_spatraster(data = ind, maxcell = 7e+05) + 
     scale_fill_whitebox_c(
       palette = color.palette,
       na.value = NA,
@@ -109,7 +113,7 @@ west_wide_map_wscale <- function(ind, color.palette, aoi.bbox.fill, scale.text.c
     ) + 
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
     #geom_sf(data=aoisShapes[[1]], fill="red", col="red", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col="black", lwd=0.6) + 
+    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col=aoi.bbox.stroke, lwd=0.6) + 
     geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
     coord_sf(crs=5070,
              xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
@@ -129,10 +133,10 @@ west_wide_map_wscale <- function(ind, color.palette, aoi.bbox.fill, scale.text.c
     )
   return(big)
 }
-west_wide_map_wscale_squishlims <- function(ind, color.palette, aoi.bbox.fill, scale.text.col){
+west_wide_map_wscale_squishlims <- function(ind, color.palette, aoi.bbox.fill, aoi.bbox.stroke, scale.text.col){
   big <- ggplot() +
     geom_spatraster_rgb(data=x_terra_masked) + 
-    geom_spatraster(data = ind) + 
+    geom_spatraster(data = ind, maxcell=7e+05) + 
     scale_fill_whitebox_c(
       palette = color.palette,
       na.value = NA,
@@ -140,7 +144,7 @@ west_wide_map_wscale_squishlims <- function(ind, color.palette, aoi.bbox.fill, s
       oob = scales::oob_squish_any
     ) + 
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col="black", lwd=0.6) + 
+    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col=aoi.bbox.stroke, lwd=0.6) + 
     geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
     coord_sf(crs=5070,
              xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
@@ -161,7 +165,7 @@ west_wide_map_wscale_squishlims <- function(ind, color.palette, aoi.bbox.fill, s
   return(big)
 }
 
-west_wide_map_noscale <- function(ind, color.palette, aoi.bbox.fill){
+west_wide_map_noscale <- function(ind, color.palette, aoi.bbox.fill, aoi.bbox.stroke){
   big <- ggplot() +
     geom_spatraster_rgb(data=x_terra_masked) + 
     geom_spatraster(data = ind) + 
@@ -172,7 +176,7 @@ west_wide_map_noscale <- function(ind, color.palette, aoi.bbox.fill){
       #oob = scales::oob_squish_any
     ) + 
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col="black", lwd=0.6) + 
+    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col=aoi.bbox.stroke, lwd=0.6) + 
     geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
     coord_sf(crs=5070,
              xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
@@ -196,7 +200,7 @@ west_wide_map_noscale_squishlims <- function(ind){
       oob = scales::oob_squish_any
     ) + 
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col="black", lwd=0.6) + 
+    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col=aoi.bbox.stroke, lwd=0.6) + 
     geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
     coord_sf(crs=5070,
              xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
@@ -211,7 +215,7 @@ west_wide_map_noscale_squishlims <- function(ind){
 }
 
 ### Plot west wide map with or without scale
-(ind_west_scale_squish <- west_wide_map_wscale_squishlims(ind, "muted", NA, "black"))
+(ind_west_scale_squish <- west_wide_map_wscale_squishlims(ind, "viridi", NA, "red", "black"))
 #ind_west_scale <- west_wide_map_wscale(ind)
 #ind_west_noscale <- west_wide_map_noscale(ind)
   
@@ -222,7 +226,7 @@ y_to_x_ratio <- y_diff/x_diff
 # 
 # ggsave("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_amph_richness_west.png", big, width=5.75, h=4.5, units='in', dpi=300)
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/frenchman_breaks/frenchmansbreaks_west_geotherm_wscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/bahsahwahbee_nv/bahsahwahbee_mamm_west_withscale.pdf"
 
 ggsave(
   pdf_file,
@@ -259,16 +263,15 @@ y_add <- 1.17*x_diff
 ##manually adjust the x and y lims in this function to match desired AOI
 zoom_map_wscale <- function(cropped_rast, color.palette, scale.text.col){
   zoom <- ggplot() +
-    geom_sf(data=canada, fill="#414141", lwd=0) + 
     geom_sf(data=states, fill="gray", col="black", lwd=0.5) + 
-    geom_spatraster(data = cropped_rast) + 
+    geom_spatraster(data = cropped_rast, maxcell = 7e+05) + 
     scale_fill_whitebox_c(
       palette = color.palette,
       na.value = NA,
       limits=my_lims) + 
     geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
     coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
-             ylim = c(2904410.7, (2904410.7+y_add)),### Add adjustment factor to ymax
+             ylim = c(1927529, (1927529+y_add)),### Add adjustment factor to ymax
              expand = T,
              crs=5070
     ) +
@@ -290,7 +293,7 @@ zoom_map_wscale_squishlims <- function(cropped_rast,color.palette, scale.text.co
   zoom <- ggplot() +
     geom_sf(data=canada, fill="#414141", lwd=0) + 
     geom_sf(data=states, fill="gray", col="black", lwd=0.5) + 
-    geom_spatraster(data = cropped_rast) + 
+    geom_spatraster(data = cropped_rast, maxcell = 7e+05) + 
     scale_fill_whitebox_c(
       palette = color.palette,
       na.value = NA,
@@ -299,7 +302,7 @@ zoom_map_wscale_squishlims <- function(cropped_rast,color.palette, scale.text.co
     ) + 
     geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
     coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
-             ylim = c(2904410.7, (2904410.7+y_add)),### Add adjustment factor to ymax
+             ylim = c(1927529, (1927529+y_add)),### Add adjustment factor to ymax
              expand = T,
              crs=5070
     ) +
@@ -330,7 +333,7 @@ zoom_map_noscale <- function(cropped_rast){
       limits=my_lims) + 
     geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
     coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
-             ylim = c(2904410.7, (2904410.7+y_add)),### Add adjustment factor to ymax
+             ylim = c(1927529, (1927529+y_add)),### Add adjustment factor to ymax
              expand = T,
              crs=5070
     ) +
@@ -356,7 +359,7 @@ zoom_map_noscale_squishlims <- function(cropped_rast){
     ) + 
     geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
     coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
-             ylim = c(2904410.7, (2904410.7+y_add)),### Add adjustment factor to ymax
+             ylim = c(1927529, (1927529+y_add)),### Add adjustment factor to ymax
              expand = T,
              crs=5070
     ) +
@@ -377,7 +380,7 @@ zoom_map_noscale_squishlims <- function(cropped_rast){
 #(zoom <- zoom_map_noscale_squishlims(cropped_rast))
 
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/frenchman_breaks/frenchmansbreaks_zoom_geotherm_wscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/bahsahwahbee_nv/bahsahwahbee-solar-zoom-withscale.pdf"
 
 ggsave(
   pdf_file,
