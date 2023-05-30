@@ -81,7 +81,7 @@ blmNV <- load_f(paste0(data.dir, "/working/blm_nv.gpkg"))
 #-------------------------------------------------------------------------------
 ## Load AOIs
 
-bahsahwahbee <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/Bahsahwahbee_NV/BahsahwahbeeNM110822.shp") %>%
+stillwater <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/StillwaterRange_NV/StillwaterACEC_051023/StillwaterAcecTotal-polygon.shp") %>%
   as_Spatial() %>%
   aggregate() %>%
   st_as_sf()

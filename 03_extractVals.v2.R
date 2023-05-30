@@ -13,15 +13,15 @@ today <- paste0(Sys.Date())
 
 varsRasters <- list(amph, bird, mamm, rept, impSpp, connect,
                     intact, ecoRar, vegDiv, sage, annHerb,
-                    climAcc, climStab, 
-                    geotherm, mineral, solar, wind,
+                    climAcc, climStab, geoDiv, geoRar,
+                    geotherm, mineral, oilGas, solar, wind,
                     waterAvail, waterFut, nightDark)
 
 
 namesRasters <- c("amph", "bird", "mamm", "rept", "impSpp", "connect",
                   "intact", "ecoRar", "vegDiv", "sage", "annHerb",
-                  "climAcc", "climStab", 
-                  "geotherm", "mineral", "solar", "wind",
+                  "climAcc", "climStab", "geoDiv", "geoRar",
+                  "geotherm", "mineral", "oilGas", "solar", "wind",
                   "waterAvail", "waterFut", "nightDark")
 
 ## Domain selection -----------------------------------------------------------
@@ -44,9 +44,9 @@ ns <- c(2000, 2000, 500, 500)
 
 ## AOI selection --------------------------------------------------------------
 
-aoisShapes <- list(bahsahwahbee)
+aoisShapes <- list(stillwater)
 aoisNames <- c(
-  "Bahsahwahbee"
+  "Stillwater Range"
 )
 
 
@@ -149,7 +149,7 @@ foo[c(3,5:10)] <- lapply(foo[c(3,5:10)], as.numeric) # Set numbers to numbers.
 v <- 1
 #v <- v+1
 # Turn on to write out file
-write.csv(foo, paste0(out.dir, "Bahsahwahbee", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
+write.csv(foo, paste0(out.dir, "StillwaterRange", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
 
 
 
