@@ -92,6 +92,10 @@ canada <- countries_plotting %>%
 ### Sometimes works...sometimes doesn't for reasons unknown to me - 
 #my_lims <- minmax(ind, na.rm=T) %>% as.integer()
 
+
+### Calculate 2nd and 98th quantile for visualization params 
+(qr <- global(ind, \(i) quantile(i, c(0.02, 0.98), na.rm=T)))
+
 my_lims <- c(0, 0.15)
 
 ### Masking some threat rasters 
