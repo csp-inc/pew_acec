@@ -53,7 +53,7 @@ mexico_us_canada <- countries %>%
 (wind <- raster("windprobi_lt30pslope_ddpowerline4normPAs0UrbH20MULT.tif"))
 
 
- ind <- rast(geoDiv)
+ ind <- rast(intact)
 # ind_fix <- terra::project(ind, rast(mamm))
 # ind <- ind_fix
  
@@ -197,8 +197,8 @@ west_wide_map_noscale_squishlims <- function(ind){
 }
 
 ### Plot west wide map with or without scale
-#ind_west_scale <- west_wide_map_wscale(ind)
-ind_west_noscale <- west_wide_map_noscale(ind)
+ind_west_scale <- west_wide_map_wscale(ind)
+#ind_west_noscale <- west_wide_map_noscale(ind)
 
 ### Calculate the aspect ratio of the map  
 y_diff <- st_bbox(states)[4]-st_bbox(states)[2]
@@ -208,7 +208,7 @@ y_to_x_ratio <- y_diff/x_diff
 # Export to PDF 
 # ggsave("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_amph_richness_west.png", big, width=5.75, h=4.5, units='in', dpi=300)
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_geodiv_west_noscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_intact_west_wscale.pdf"
 
 ggsave(
   pdf_file,
