@@ -1,7 +1,7 @@
 
 today <- paste0(Sys.Date())
 
-setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/bahsahwahbee_nv/")
+setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/stillwater_range_nv/")
 
 #########################################
 ## CREATE INDICATOR FIGURES FOR REPORT ##
@@ -9,7 +9,7 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 
 ## Load csvs with raw results --------------------------------------------------
 
-data <- read.csv(paste0(out.dir, "Bahsahwahbee_aoi_vs_sample_percentiles_2023-05-18_v1.csv")) %>%
+data <- read.csv(paste0(out.dir, "StillwaterRange_aoi_vs_sample_percentiles_2023-05-29_v1.csv")) %>%
   dplyr::select(an, dn, nv, vn, pv)
 
 ## Assign categories/labels ----------------------------------------------------

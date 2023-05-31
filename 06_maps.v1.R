@@ -15,12 +15,10 @@ library(tinytex)
 source("/Users/patrickfreeman-csp/Documents/GitHub/pew_acec/utils/00_map_plot_functions.R")
 
 ### Get the aoisShapes object
-
-fishlake_volcanic_sump <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/FishLakeSumpVolcanic_NV/FishLakeSumpVolcanicHills_combined.gpkg") %>%
+load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/StillwaterRange_NV/StillwaterACEC_051023/StillwaterAcecTotal-polygon.shp") %>%
   as_Spatial() %>%
   aggregate() %>%
-  st_as_sf() %>%
-  fill_holes(., 1000)
+  st_as_sf()
 
 aoisShapes <- list(fishlake_volcanic_sump)
 aoisNames <- c(
