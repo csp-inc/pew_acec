@@ -15,14 +15,14 @@ library(tinytex)
 source("/Users/patrickfreeman-csp/Documents/GitHub/pew_acec/utils/00_map_plot_functions.R")
 
 ### Get the aoisShapes object
-load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/StillwaterRange_NV/StillwaterACEC_051023/StillwaterAcecTotal-polygon.shp") %>%
+stillwater <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/StillwaterRange_NV/StillwaterACEC_051023/StillwaterAcecTotal-polygon.shp") %>%
   as_Spatial() %>%
   aggregate() %>%
   st_as_sf()
 
-aoisShapes <- list(fishlake_volcanic_sump)
+aoisShapes <- list(stillwater)
 aoisNames <- c(
-  "Fish Lake"
+  "Stillwater Range"
 )
 
 ### Set WD to data directory for sourcing 
@@ -54,11 +54,10 @@ mexico_us_canada <- countries %>%
 
 ### Set indicator 
 (intact <- raster("intactNorm.tif"))
-(connect <- raster("connNorm.tif"))
-(mamm <- raster("mamm_west_270m.tif"))
 (rept <- raster("rept_west_270m.tif"))
-(amph <- raster("amph_west_270m.tif")) 
-(climAcc <- raster("ClimAccNorm.tif"))
+(geoDiv <- raster("div_ergo_lth270mnorm.tif"))
+(geoRar <- raster("georarity270mnorm.tif"))
+(sage <- raster("sage_270m.tif"))
 (climStab <- raster("ClimStabNorm.tif"))
 
 
@@ -68,12 +67,13 @@ mexico_us_canada <- countries %>%
 (wind <- raster("windprobi_lt30pslope_ddpowerline4normPAs0UrbH20MULT.tif"))
 (solar <- raster("maxdnighi_lt5pslope_ddpowerline4normPAs0UrbH20.tif"))
 (geotherm <- raster("geotherm_lt10pslop_nourbFWPAspldist.tif"))
-(waterFut <- raster("wateruseddwaterdist2norm.tif"))
+(annHerb <- raster("annHerb_270m.tif"))
+
 
 
 
 ### Swap out indicator of interest 
-ind <- rast(amph)
+ind <- rast(geoDiv)
 
 ### Calculate 2nd and 98th quantile for visualization params 
 (qr <- global(ind, \(i) quantile(i, c(0.02, 0.98), na.rm=T)))
@@ -109,10 +109,14 @@ my_lims <- c(qr$X2., qr$X98.)
 ### Masking some threat rasters 
 ind <- mask(ind, vect(st_transform(states, crs=st_crs(ind))))
 
+### for sage and annHerb rasters
+#sb <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/working/US_Sagebrush_Biome_2019.shp")
+#ind <- mask(ind, vect(st_transform(sb, crs=st_crs(ind))))
+
 
 
 ### Plot west wide map with or without scale
-(ind_west_scale_squish <- west_wide_map_wscale_squishlims(ind, "viridi", "red","red", "black"))
+(ind_west_scale_squish <- west_wide_map_wscale_squishlims(ind, "muted", "red","black", "black"))
 #ind_west_scale <- west_wide_map_wscale(ind)
 #ind_west_noscale <- west_wide_map_noscale(ind)
   
@@ -123,7 +127,7 @@ y_to_x_ratio <- y_diff/x_diff
 # 
 # ggsave("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_amph_richness_west.png", big, width=5.75, h=4.5, units='in', dpi=300)
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/fishlake_nv/fishlake_amph_west_withscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/stillwater_range_nv/stillwater_annHerb_west_withscale.pdf"
 
 ggsave(
   pdf_file,
@@ -161,12 +165,12 @@ ymin <- st_bbox(aoi_5070)[2]
 
 ### Plot zoom map with or without scale/squishlims
 #(zoom <- zoom_map_wscale(cropped_rast, "muted", "black"))
-(zoom <- zoom_map_wscale_squishlims(cropped_rast, "viridi", "white", ymin))
+(zoom <- zoom_map_wscale_squishlims(cropped_rast, "viridi", "black", ymin))
 #(zoom <- zoom_map_noscale(cropped_rast))
 #(zoom <- zoom_map_noscale_squishlims(cropped_rast))
 
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/fishlake_nv/fishlake-amph-zoom-withscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/stillwater_range_nv/stillwater-geoDiv-zoom-withscale.pdf"
 
 ggsave(
   pdf_file,
