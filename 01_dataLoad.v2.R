@@ -29,8 +29,8 @@ usa <- load_f(paste0(data.dir, "/working/tl_2012_us_state.shp"))
 keeps <- c("Washington", "Oregon", "California", "Idaho", "Montana",
            "Wyoming", "Nevada", "Utah", "Colorado", "Arizona", "New Mexico")
 west <- usa %>% filter(NAME %in% keeps)
-nv <- usa %>% filter(NAME == "Nevada") %>% as_Spatial() 
-nvArea <- terra::area(nv) %>% sum()/1000000
+id <- usa %>% filter(NAME == "Idaho") %>% as_Spatial() 
+idArea <- terra::area(nv) %>% sum()/1000000
 remove(usa, keeps)
 
 
@@ -76,12 +76,12 @@ remove(usa, keeps)
 
 
 blmWest <- load_f(paste0(data.dir, "/working/blm_west.shp"))
-blmNV <- load_f(paste0(data.dir, "/working/blm_nv.gpkg"))
+blmID <- load_f(paste0(data.dir, "/working/blm_id.gpkg"))
 
 #-------------------------------------------------------------------------------
 ## Load AOIs
 
-stillwater <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/StillwaterRange_NV/StillwaterACEC_051023/StillwaterAcecTotal-polygon.shp") %>%
+donkey <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/DonkeyHills_ID/Donkey_Hills_ACEC_Existing_and_Proposed_052523/Donkey_Hills_ACEC_Existing_and_Proposed_052523.shp") %>%
   as_Spatial() %>%
   aggregate() %>%
   st_as_sf()
@@ -112,8 +112,6 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 (bird <- raster("bird_west_270m.tif"))
 (mamm <- raster("mamm_west_270m.tif"))
 (rept <- raster("rept_west_270m.tif"))
-
-
 (impSpp <- raster("impSppNorm.tif")) ; crs(impSpp) <- proj.crs
 
 

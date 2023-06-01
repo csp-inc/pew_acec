@@ -28,12 +28,12 @@ namesRasters <- c("amph", "bird", "mamm", "rept", "impSpp", "connect",
 
 domains <- list(st_as_sf(west),
                 blmWest,
-                st_as_sf(nv),
-                blmNV)
+                st_as_sf(id),
+                blmID)
 dNames <- c("west",
             "blmWest",
-            "nv",
-            "blmNV")
+            "ID",
+            "blmID")
 
 
 ## Sample size selection to match domains -------------------------------------
@@ -44,9 +44,9 @@ ns <- c(2000, 2000, 500, 500)
 
 ## AOI selection --------------------------------------------------------------
 
-aoisShapes <- list(stillwater)
+aoisShapes <- list(donkey)
 aoisNames <- c(
-  "Stillwater Range"
+  "Donkey Hills"
 )
 
 
@@ -149,7 +149,7 @@ foo[c(3,5:10)] <- lapply(foo[c(3,5:10)], as.numeric) # Set numbers to numbers.
 v <- 1
 #v <- v+1
 # Turn on to write out file
-write.csv(foo, paste0(out.dir, "StillwaterRange", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
+write.csv(foo, paste0(out.dir, "DonkeyHills", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
 
 
 
