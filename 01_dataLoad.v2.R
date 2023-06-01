@@ -30,7 +30,7 @@ keeps <- c("Washington", "Oregon", "California", "Idaho", "Montana",
            "Wyoming", "Nevada", "Utah", "Colorado", "Arizona", "New Mexico")
 west <- usa %>% filter(NAME %in% keeps)
 id <- usa %>% filter(NAME == "Idaho") %>% as_Spatial() 
-idArea <- terra::area(nv) %>% sum()/1000000
+idArea <- terra::area(id) %>% sum()/1000000
 remove(usa, keeps)
 
 
