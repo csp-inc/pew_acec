@@ -1,7 +1,7 @@
 
 today <- paste0(Sys.Date())
 
-setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/bahsahwahbee_nv/")
+setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/donkeyhills_id")
 
 #########################################
 ## CREATE INDICATOR FIGURES FOR REPORT ##
@@ -9,13 +9,13 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 
 ## Load csvs with raw results --------------------------------------------------
 
-data <- read.csv(paste0(out.dir, "Bahsahwahbee_aoi_vs_sample_percentiles_2023-05-18_v1.csv")) %>%
+data <- read.csv(paste0(out.dir, "DonkeyHills_aoi_vs_sample_percentiles_2023-05-31_v1.csv")) %>%
   dplyr::select(an, dn, nv, vn, pv)
 
 ## Assign categories/labels ----------------------------------------------------
 
 # Assign value/threat
-threats <- c("annHerb", "geotherm", "wind", "solar", "mineral",  "waterFut")
+threats <- c("annHerb", "geotherm", "oilGas", "wind", "solar", "mineral",  "waterFut")
 data <- data %>%
   mutate(type = ifelse(vn %in% threats, "threat", "value"))
 
@@ -34,9 +34,12 @@ lu <-
       "vegDiv",
       "sage",
       "annHerb",
+      "geoDiv",
+      "geoRar",
       "climAcc",
       "climStab",
       "geotherm",
+      "oilGas",
       "mineral",
       "solar",
       "wind",
@@ -56,9 +59,12 @@ lu <-
       "Vegetation diversity",
       "Percent sagebrush cover",
       "Percent annual herbaceous cover",
+      "Geophysical diversity",
+      "Geophysical rarity",
       "Climate accessibility",
       "Climate stability",
       "Geothermal resource potential",
+      "Oil and gas resource potential",
       "Mineral resource potential",
       "Solar resource potential",
       "Wind resource potential",
@@ -130,11 +136,11 @@ col_threat <- c("#c81e43", #dark red
 # Filter data to given AOI and sampling domain
 sel <- data %>%
   filter(
-          an == "Bahsahwahbee",
+          an == "Donkey Hills",
          # dn == "west"
          # dn == "blmWest"
-          dn == "nv"
-         #  dn == "blmNV"
+         # dn == "ID"
+           dn == "blmID"
          )
 
 # Order data by percentile ranks (greatest first)
