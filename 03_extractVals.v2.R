@@ -28,25 +28,26 @@ namesRasters <- c("amph", "bird", "mamm", "rept", "impSpp", "connect",
 
 domains <- list(st_as_sf(west),
                 blmWest,
-                st_as_sf(nv),
-                blmNV)
+                st_as_sf(ca),
+                blmCA)
 dNames <- c("west",
             "blmWest",
-            "nv",
-            "blmNV")
+            "ca",
+            "blmCA")
 
 
 ## Sample size selection to match domains -------------------------------------
 
-ns <- c(2000, 2000, 500, 500)
+#ns <- c(2000, 2000, 500, 500)
 #ns <- c(20, 20, 5, 5)
+ns <- c(5, 5, 5, 5)
 
 
 ## AOI selection --------------------------------------------------------------
 
-aoisShapes <- list(stillwater)
+aoisShapes <- list(bodie)
 aoisNames <- c(
-  "Stillwater Range"
+  "Bodie Hills"
 )
 
 
@@ -74,9 +75,6 @@ ev <- as.numeric()
 # ecdf_fun <- function(x,perc) ecdf(x)(perc)
 # ecdf_fun(samp_vals, aoi_vals)
 
-# FIXME (possibly):
-# Consider hard-wiring random sample for reproducibility via set.seed()
-set.seed(1234)
 start <- Sys.time()
 # Work thru each of the AOIs
 for (i in 1:length(aoisShapes)){
@@ -87,6 +85,7 @@ for (i in 1:length(aoisShapes)){
   trgt_area <- sum(terra::expanse(vect(a), unit = "m")) # sum in case multi-part 
   # Work thru each of the domains.
   for (j in 1:length(domains)){
+    set.seed(2023) # Hard wire random sample for reproducibility via set.seed()
     # Within a given domain, create n sample points
     pts = sf::st_sample(domains[[j]], size = ns[j])
     # Grow those sample points to match AOI area.
@@ -149,7 +148,7 @@ foo[c(3,5:10)] <- lapply(foo[c(3,5:10)], as.numeric) # Set numbers to numbers.
 v <- 1
 #v <- v+1
 # Turn on to write out file
-write.csv(foo, paste0(out.dir, "StillwaterRange", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
+write.csv(foo, paste0(out.dir, "BodieHills", "_aoi_vs_sample_percentiles_", today, "_v",v, ".csv"))
 
 
 
