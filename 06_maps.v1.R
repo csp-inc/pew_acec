@@ -10,6 +10,8 @@ library(rnaturalearth)
 library(knitr)
 library(tinytex)
 
+source("/Users/patrickfreeman-csp/Documents/GitHub/pew_acec/utils/00_map_plot_functions.R")
+
 ### Get the aoisShapes object
 
 aoisShapes <- list(bahsahwahbee)
