@@ -1,7 +1,7 @@
 
 today <- paste0(Sys.Date())
 
-setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/bahsahwahbee_nv/")
+setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/bodiehills_ca/")
 
 #########################################
 ## CREATE INDICATOR FIGURES FOR REPORT ##
@@ -9,13 +9,13 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 
 ## Load csvs with raw results --------------------------------------------------
 
-data <- read.csv(paste0(out.dir, "Bahsahwahbee_aoi_vs_sample_percentiles_2023-05-18_v1.csv")) %>%
+data <- read.csv(paste0(out.dir, "BodieHills_aoi_vs_sample_percentiles_2023-06-01_v1.csv")) %>%
   dplyr::select(an, dn, nv, vn, pv)
 
 ## Assign categories/labels ----------------------------------------------------
 
 # Assign value/threat
-threats <- c("annHerb", "geotherm", "wind", "solar", "mineral",  "waterFut")
+threats <- c("annHerb", "geotherm", "oilGas", "wind", "solar", "mineral", "waterFut")
 data <- data %>%
   mutate(type = ifelse(vn %in% threats, "threat", "value"))
 
@@ -36,7 +36,10 @@ lu <-
       "annHerb",
       "climAcc",
       "climStab",
+      "geoDiv",
+      "geoRar",
       "geotherm",
+      "oilGas",
       "mineral",
       "solar",
       "wind",
@@ -58,7 +61,10 @@ lu <-
       "Percent annual herbaceous cover",
       "Climate accessibility",
       "Climate stability",
+      "Geophysical diversity",
+      "Geophysical rarity",
       "Geothermal resource potential",
+      "Oil and gas resource potential",
       "Mineral resource potential",
       "Solar resource potential",
       "Wind resource potential",
@@ -130,11 +136,11 @@ col_threat <- c("#c81e43", #dark red
 # Filter data to given AOI and sampling domain
 sel <- data %>%
   filter(
-          an == "Bahsahwahbee",
+          an == "Bodie Hills",
          # dn == "west"
          # dn == "blmWest"
-          dn == "nv"
-         #  dn == "blmNV"
+         # dn == "ca"
+           dn == "blmCA"
          )
 
 # Order data by percentile ranks (greatest first)
