@@ -1,4 +1,4 @@
-west_wide_map_wscale <- function(ind, color.palette, aoi.bbox.fill, scale.text.col){
+west_wide_map_wscale <- function(ind, color.palette, aoi.bbox.fill, aoi.bbox.col, scale.text.col){
   big <- ggplot() +
     geom_spatraster_rgb(data=x_terra_masked) + 
     geom_spatraster(data = ind) + 
@@ -10,7 +10,7 @@ west_wide_map_wscale <- function(ind, color.palette, aoi.bbox.fill, scale.text.c
     ) + 
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
     #geom_sf(data=aoisShapes[[1]], fill="red", col="red", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col="black", lwd=0.6) + 
+    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col=aoi.bbox.col, lwd=0.6, alpha=0.1) + 
     geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
     coord_sf(crs=5070,
              xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
@@ -30,7 +30,7 @@ west_wide_map_wscale <- function(ind, color.palette, aoi.bbox.fill, scale.text.c
     )
   return(big)
 }
-west_wide_map_wscale_squishlims <- function(ind, color.palette, aoi.bbox.fill, scale.text.col){
+west_wide_map_wscale_squishlims <- function(ind, color.palette, aoi.bbox.fill, aoi.bbox.col, scale.text.col){
   big <- ggplot() +
     geom_spatraster_rgb(data=x_terra_masked) + 
     geom_spatraster(data = ind, maxcell = 7e+05) + 
@@ -41,7 +41,7 @@ west_wide_map_wscale_squishlims <- function(ind, color.palette, aoi.bbox.fill, s
       oob = scales::oob_squish_any
     ) + 
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col="black", lwd=0.6) + 
+    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col=aoi.bbox.col, lwd=0.6, alpha=0.15) + 
     geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
     coord_sf(crs=5070,
              xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
@@ -122,7 +122,7 @@ zoom_map_wscale <- function(cropped_rast, color.palette, scale.text.col){
       limits=my_lims) + 
     geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=1.2) + 
     coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
-             ylim = c(2904410.7, (2904410.7+y_add)),### Add adjustment factor to ymax
+             ylim = c(1902042, (1902042+y_add)),### Add adjustment factor to ymax
              expand = T,
              crs=5070
     ) +
@@ -140,9 +140,8 @@ zoom_map_wscale <- function(cropped_rast, color.palette, scale.text.col){
           panel.grid=element_blank(),
           panel.border=element_blank())
 }
-zoom_map_wscale_squishlims <- function(cropped_rast,color.palette, scale.text.col){
+zoom_map_wscale_squishlims <- function(cropped_rast,color.palette, scale.text.col, ymin){
   zoom <- ggplot() +
-    geom_sf(data=canada, fill="#414141", lwd=0) + 
     geom_sf(data=states, fill="gray", col="black", lwd=0.5) + 
     geom_spatraster(data = cropped_rast) + 
     scale_fill_whitebox_c(
@@ -153,7 +152,7 @@ zoom_map_wscale_squishlims <- function(cropped_rast,color.palette, scale.text.co
     ) + 
     geom_sf(data=aoisShapes[[1]], fill="red", col="red", lwd=1.2, alpha=0.1) + 
     coord_sf(xlim = c(st_bbox(aoi_5070)[1], st_bbox(aoi_5070)[3]),
-             ylim = c(2904410.7, (2904410.7+y_add)),### Add adjustment factor to ymax
+             ylim = c(ymin, (ymin+y_add)),### Add adjustment factor to ymax
              expand = T,
              crs=5070
     ) +
@@ -199,7 +198,6 @@ zoom_map_noscale <- function(cropped_rast, color.palette){
 }
 zoom_map_noscale_squishlims <- function(cropped_rast, color.palette){
   zoom <- ggplot() +
-    geom_sf(data=canada, fill="#414141", lwd=0) + 
     geom_sf(data=states, fill="gray", col="black", lwd=0.5) +  
     geom_spatraster(data = cropped_rast) + 
     scale_fill_whitebox_c(
