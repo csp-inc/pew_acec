@@ -86,7 +86,7 @@ west_wide_map_noscale <- function(ind, color.palette, aoi.bbox.fill){
     )
   return(big)
 }
-west_wide_map_noscale_squishlims <- function(ind, color.palette, aoi.bbox.fill){
+west_wide_map_noscale_squishlims <- function(ind, color.palette, aoi.bbox.fill, aoi.bbox.col){
   big <- ggplot() +
     geom_spatraster_rgb(data=x_terra_masked) + 
     geom_spatraster(data = ind, maxcell = 7e+05) + 
@@ -97,7 +97,7 @@ west_wide_map_noscale_squishlims <- function(ind, color.palette, aoi.bbox.fill){
       oob = scales::oob_squish_any
     ) + 
     geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col="black", lwd=0.6, alpha=0.6) + 
+    geom_sf(data=aoi_bbox, fill=aoi.bbox.fill, col=aoi.bbox.col, lwd=0.6, alpha=0.6) + 
     geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
     coord_sf(crs=5070,
              xlim = c(st_bbox(states)[1], st_bbox(states)[3]),

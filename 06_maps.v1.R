@@ -13,6 +13,8 @@ library(tinytex)
 ### Set WD to data directory for sourcing 
 setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/working")
 
+source("/Users/patrickfreeman-csp/Documents/GitHub/pew_acec/utils/00_map_plot_functions.R")
+
 ### Get states from 01_dataLoad.v2.R 
 states <- west
 ### Simplify for plotting
@@ -62,7 +64,7 @@ aoisNames <- c(
 
 sb <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/working/US_Sagebrush_Biome_2019.shp")
 ###
-ind <- rast(climStab)
+ind <- rast(intact)
 # ind_fix <- terra::project(ind, rast(intact))
 # ind <- ind_fix
  
@@ -84,10 +86,10 @@ countries_plotting <- crop(vect(mexico_us_canada), x_terra_masked) %>%
   st_as_sf() %>%
   st_transform(., crs=5070)
 
-### Get min and max of raster values to maintain scales across both plots 
-### Sometimes works...sometimes doesn't for reasons unknown to me - 
-#my_lims <- minmax(ind, na.rm=T) %>% as.integer()
-my_lims <- c(0.4,1)
+
+### Calculate 2nd and 98th quantile for visualization params 
+(qr <- global(ind, \(i) quantile(i, c(0.02, 0.98), na.rm=T)))
+my_lims <- c(qr$X2., qr$X98.)
 
 ### Masking some threat rasters 
 ind <- mask(ind, vect(st_transform(states, crs=st_crs(ind))))
@@ -97,127 +99,19 @@ ind <- mask(ind, vect(st_transform(states, crs=st_crs(ind))))
 
 ### Westwide plot with state boundaries and the AOI highlighted in red with a bounding box
 ### Set up several plotting functions to make things more streamlined
-west_wide_map_wscale <- function(ind){
-  big <- ggplot() +
-    geom_spatraster_rgb(data=x_terra_masked) + 
-    geom_spatraster(data = ind) + 
-    scale_fill_whitebox_c(
-      palette = "viridi",
-      na.value = NA,
-      limits=my_lims
-      #oob = scales::oob_squish_any
-    ) + 
-    geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-    geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
-    geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
-    coord_sf(crs=5070,
-             xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
-             ylim = c(st_bbox(states)[2], st_bbox(states)[4]),
-             expand = F) +
-    annotation_scale() +
-    annotation_north_arrow(which_north = "grid",
-                           pad_x = unit(0.1, "in"), pad_y = unit(0.2, "in"),
-                           style = north_arrow_fancy_orienteering) +
-    theme_void() + 
-    theme(legend.position="none",
-          panel.background = element_rect(fill = "lightblue",
-                                          colour = "lightblue")
-    )
-  return(big)
-}
-west_wide_map_wscale_squishlims <- function(ind){
-  big <- ggplot() +
-    geom_spatraster_rgb(data=x_terra_masked) + 
-    geom_spatraster(data = ind) + 
-    scale_fill_whitebox_c(
-      palette = "viridi",
-      na.value = NA,
-      limits=my_lims,
-      oob = scales::oob_squish_any
-    ) + 
-    geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-    geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
-    geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
-    coord_sf(crs=5070,
-             xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
-             ylim = c(st_bbox(states)[2], st_bbox(states)[4]),
-             expand = F) +
-    annotation_scale() +
-    annotation_north_arrow(which_north = "grid",
-                           pad_x = unit(0.1, "in"), pad_y = unit(0.2, "in"),
-                           style = north_arrow_fancy_orienteering) +
-    theme_void() + 
-    theme(legend.position="none",
-          panel.background = element_rect(fill = "lightblue",
-                                          colour = "lightblue")
-    )
-  return(big)
-}
-
-west_wide_map_noscale <- function(ind){
-  big <- ggplot() +
-    geom_spatraster_rgb(data=x_terra_masked) + 
-    geom_spatraster(data = ind) + 
-    scale_fill_whitebox_c(
-      palette = "viridi",
-      na.value = NA,
-      limits=my_lims
-      #oob = scales::oob_squish_any
-    ) + 
-    geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-    #geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
-    geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
-    coord_sf(crs=5070,
-             xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
-             ylim = c(st_bbox(states)[2], st_bbox(states)[4]),
-             expand = F) +
-    theme_void() + 
-    theme(legend.position="none",
-          panel.background = element_rect(fill = "lightblue",
-                                          colour = "lightblue")
-    )
-  return(big)
-}
-west_wide_map_noscale_squishlims <- function(ind){
-  big <- ggplot() +
-    geom_spatraster_rgb(data=x_terra_masked) + 
-    geom_spatraster(data = ind) + 
-    scale_fill_whitebox_c(
-      palette = "viridi",
-      na.value = NA,
-      limits=my_lims,
-      oob = scales::oob_squish_any
-    ) + 
-    geom_sf(data=states, fill=NA, col="black", lwd=0.5) + 
-    geom_sf(data=aoisShapes[[1]], fill=NA, col="red", lwd=0.5) + 
-    geom_sf(data=aoi_bbox, fill=NA, col="black", lwd=0.6) + 
-    geom_sf(data=mexico_us_canada, col="black", fill=NA, lwd=0.25) + 
-    coord_sf(crs=5070,
-             xlim = c(st_bbox(states)[1], st_bbox(states)[3]),
-             ylim = c(st_bbox(states)[2], st_bbox(states)[4]),
-             expand = F) +
-    theme_void() + 
-    theme(legend.position="none",
-          panel.background = element_rect(fill = "lightblue",
-                                          colour = "lightblue")
-    )
-  return(big)
-}
 
   
 y_diff <- st_bbox(states)[4]-st_bbox(states)[2]
 x_diff <- st_bbox(states)[3]-st_bbox(states)[1]
 y_to_x_ratio <- y_diff/x_diff
 
-# 
-### Plot west wide map with or without scale
-#ind_west_scale <- west_wide_map_wscale(ind)
-(ind_west_noscale <- west_wide_map_noscale(ind))
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/cmr_sagegrouse_additions/cmr_climStab_west_noscale.pdf"
+### Plot west wide map with or without scale
+(ind_west_scale_squish <- west_wide_map_noscale_squishlims(ind, "viridi", "white","red"))
+#ind_west_scale <- west_wide_map_wscale(ind)
+#ind_west_noscale <- west_wide_map_noscale(ind)
+
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/cmr_sagegrouse_additions/cmr_intact_west_noscale.pdf"
 
 ggsave(
   pdf_file,
