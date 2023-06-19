@@ -51,7 +51,7 @@ mexico_us_canada <- countries %>%
 
 sb <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/working/US_Sagebrush_Biome_2019.shp")
 ###
- ind <- rast(oilGas)
+ ind <- rast(intact)
 # ind_fix <- terra::project(ind, rast(intact))
 # ind <- ind_fix
  
@@ -203,7 +203,7 @@ y_to_x_ratio <- y_diff/x_diff
 
 # Export to PDF
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/musselshell_breaks/musselshell_annHerb_west_noscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/musselshell_breaks/musselshell_intact_west_noscale.pdf"
 
 ggsave(
   pdf_file,
