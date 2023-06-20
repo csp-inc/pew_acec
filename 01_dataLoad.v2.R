@@ -84,7 +84,6 @@ blmMT <- load_f(paste0(data.dir, "/working/blm_mt.shp"))
 cmr_addition <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/CMR_Sage_Grouse_Additions_MT/CMR_Sage_Grouse_Additions/CMR_Sage_Grouse_Additions.shp") %>%
   as_Spatial() %>%
   aggregate()
-
 #-------------------------------------------------------------------------------
 ## Load indicators
 setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/working")
@@ -163,6 +162,8 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 
 #IBA 
 iba_mt <- load_f(paste0(data.dir, "/working/Important_Bird_Areas_MT.gpkg"))
+
+
 setwd("/Volumes/GoogleDrive/My Drive/00_CSP_Projects/Pew_ACEC")
 
 
