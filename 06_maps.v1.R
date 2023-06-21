@@ -75,7 +75,7 @@ mexico_us_canada <- countries %>%
 
 
 ### Swap out indicator of interest 
-ind <- rast(amph)
+ind <- rast(mamm)
 
 ### Calculate 2nd and 98th quantile for visualization params 
 (qr <- global(ind, \(i) quantile(i, c(0.02, 0.98), na.rm=T)))
@@ -163,12 +163,12 @@ ymin <- st_bbox(aoi_5070)[2]
 
 ### Plot zoom map with or without scale/squishlims
 #(zoom <- zoom_map_wscale(cropped_rast, "muted", "black"))
-(zoom <- zoom_map_wscale_squishlims(cropped_rast, "viridi", "white", ymin))
+(zoom <- zoom_map_wscale_squishlims(cropped_rast, "viridi", "black", ymin))
 #(zoom <- zoom_map_noscale(cropped_rast))
 #(zoom <- zoom_map_noscale_squishlims(cropped_rast))
 
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/fishlake_nv/fishlake-amph-zoom-withscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/fishlake_nv/fishlake-mamm-zoom-withscale.pdf"
 
 ggsave(
   pdf_file,

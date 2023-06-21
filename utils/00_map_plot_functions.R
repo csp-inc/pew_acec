@@ -142,7 +142,6 @@ zoom_map_wscale <- function(cropped_rast, color.palette, scale.text.col, ymin){
 }
 zoom_map_wscale_squishlims <- function(cropped_rast,color.palette, scale.text.col, ymin){
   zoom <- ggplot() +
-    geom_sf(data=canada, fill="#414141", lwd=0) + 
     geom_sf(data=states, fill="gray", col="black", lwd=0.5) + 
     geom_spatraster(data = cropped_rast) + 
     scale_fill_whitebox_c(
