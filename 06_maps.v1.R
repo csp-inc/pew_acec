@@ -48,6 +48,7 @@ mexico_us_canada <- countries %>%
 
 ### Set indicator 
 (intact <- raster("intactNorm.tif"))
+(connect <- raster("connNorm.tif"))
 (impSpp <- raster("impSppNorm.tif")) ; crs(impSpp) <- proj.crs
 (mamm <- raster("mamm_west_270m.tif"))
 (sage <- raster("sage_270m.tif"))
@@ -66,7 +67,7 @@ sb <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml
 
 
 ### Swap out indicator of interest 
-ind <- rast(annHerb)
+ind <- rast(connect)
 
 ### Calculate 2nd and 98th quantile for visualization params 
 (qr <- global(ind, \(i) quantile(i, c(0.02, 0.98), na.rm=T)))
@@ -106,7 +107,7 @@ ind <- mask(ind, vect(st_transform(states, crs=st_crs(ind))))
 ind <- mask(ind, vect(st_transform(sb, crs=st_crs(ind))))
 
 ### Plot west wide map with or without scale
-(ind_west_scale_squish <- west_wide_map_wscale_squishlims(ind, "muted", "red","white", "black"))
+(ind_west_scale_squish <- west_wide_map_wscale_squishlims(ind, "viridi", "red","white", "black"))
 #ind_west_scale <- west_wide_map_wscale(ind)
 #ind_west_noscale <- west_wide_map_noscale(ind)
   
@@ -117,7 +118,7 @@ y_to_x_ratio <- y_diff/x_diff
 # 
 # ggsave("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/otero_mesa/otero_amph_richness_west.png", big, width=5.75, h=4.5, units='in', dpi=300)
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/bodiehills_ca/bodie_annHerb_west_withscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/bodiehills_ca/bodie_connect_west_withscale.pdf"
 
 ggsave(
   pdf_file,
@@ -153,12 +154,12 @@ y_add <- 1.17*x_diff
 
 ### Plot zoom map with or without scale/squishlims
 #(zoom <- zoom_map_wscale(cropped_rast, "muted", "black"))
-(zoom <- zoom_map_wscale_squishlims(cropped_rast, "muted", "black", 1902042))
+(zoom <- zoom_map_wscale_squishlims(cropped_rast, "viridi", "black", 1902042))
 #(zoom <- zoom_map_noscale(cropped_rast))
 #(zoom <- zoom_map_noscale_squishlims(cropped_rast))
 
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/bodiehills_ca/bodie-annHerb-zoom-withscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/bodiehills_ca/bodie-connect-zoom-withscale.pdf"
 
 ggsave(
   pdf_file,
