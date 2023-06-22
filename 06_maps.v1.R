@@ -64,7 +64,7 @@ aoisNames <- c(
 
 sb <- load_f("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/data/working/US_Sagebrush_Biome_2019.shp")
 ###
-ind <- rast(intact)
+ind <- rast(wind)
 # ind_fix <- terra::project(ind, rast(intact))
 # ind <- ind_fix
  
@@ -107,11 +107,11 @@ y_to_x_ratio <- y_diff/x_diff
 
 
 ### Plot west wide map with or without scale
-(ind_west_scale_squish <- west_wide_map_noscale_squishlims(ind, "viridi", "white","red"))
+(ind_west_scale_squish <- west_wide_map_wscale_squishlims(ind, "muted", "white","red", "black"))
 #ind_west_scale <- west_wide_map_wscale(ind)
 #ind_west_noscale <- west_wide_map_noscale(ind)
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/cmr_sagegrouse_additions/cmr_intact_west_noscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/cmr_sagegrouse_additions/cmr_wind_west_withscale.pdf"
 
 ggsave(
   pdf_file,
@@ -248,11 +248,11 @@ zoom_map_noscale_squishlims <- function(cropped_rast){
 
 ### Plot zoom map with or without scale/squishlims
 #(zoom <- zoom_map_wscale(cropped_rast))
-(zoom <- zoom_map_noscale(cropped_rast))
+(zoom <- zoom_map_wscale_squishlims(cropped_rast, "muted", "black", 2787750.8))
 
 
 
-pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/cmr_sagegrouse_additions/cmr_climStab_zoom_noscale.pdf"
+pdf_file <- "/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsDMF7p6/Pew_ACEC/analyses/output/cmr_sagegrouse_additions/cmr_wind_zoom_wscale.pdf"
 
 ggsave(
   pdf_file,

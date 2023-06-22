@@ -113,7 +113,7 @@ west_wide_map_noscale_squishlims <- function(ind, color.palette, aoi.bbox.fill, 
 
 zoom_map_wscale <- function(cropped_rast, color.palette, scale.text.col, ymin){
   zoom <- ggplot() +
-    geom_sf(data=canada, fill="#414141", lwd=0) + 
+    #geom_sf(data=canada, fill="#414141", lwd=0) + 
     geom_sf(data=states, fill="gray", col="black", lwd=0.5) + 
     geom_spatraster(data = cropped_rast) + 
     scale_fill_whitebox_c(
@@ -142,7 +142,7 @@ zoom_map_wscale <- function(cropped_rast, color.palette, scale.text.col, ymin){
 }
 zoom_map_wscale_squishlims <- function(cropped_rast,color.palette, scale.text.col, ymin){
   zoom <- ggplot() +
-    geom_sf(data=canada, fill="#414141", lwd=0) + 
+    #geom_sf(data=canada, fill="#414141", lwd=0) + 
     geom_sf(data=states, fill="gray", col="black", lwd=0.5) + 
     geom_spatraster(data = cropped_rast) + 
     scale_fill_whitebox_c(
@@ -199,7 +199,7 @@ zoom_map_noscale <- function(cropped_rast, color.palette, ymin){
 }
 zoom_map_noscale_squishlims <- function(cropped_rast, color.palette, ymin){
   zoom <- ggplot() +
-    geom_sf(data=canada, fill="#414141", lwd=0) + 
+    #geom_sf(data=canada, fill="#414141", lwd=0) + 
     geom_sf(data=states, fill="gray", col="black", lwd=0.5) +  
     geom_spatraster(data = cropped_rast) + 
     scale_fill_whitebox_c(
