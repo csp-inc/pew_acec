@@ -163,6 +163,9 @@ setwd("/Volumes/GoogleDrive/.shortcut-targets-by-id/1IzmyhjH2hL-DtYsvhTml0HznlsD
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
+
+setwd("/Volumes/GoogleDrive/My Drive/00_CSP_Projects/Pew_ACEC")
+
 ## Spp richness CRS conundrum.
 # These are orig from https://www.sciencebase.gov/catalog/item/5bef2935e4b045bfcadf732c
 # I had downloaded, from SciBase, uploaded to GEE, then re-downloaded clipped and at lower res via Colab.
