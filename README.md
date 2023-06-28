@@ -2,9 +2,9 @@
 
 #### Conservation Science Partners
 
-#### Caitlin Littlefield ([caitlin\@csp-inc.org](mailto:caitlin@csp-inc.org)
+#### Caitlin Littlefield ([caitlin\@csp-inc.org](mailto:caitlin@csp-inc.org))
 
-#### Patrick Freeman ([patrick\@csp-inc.org](mailto:patrick@csp-inc.org)
+#### Patrick Freeman ([patrick\@csp-inc.org](mailto:patrick@csp-inc.org))
 
 The scripts within this repository generate metrics and figures that express the relative ecological values (e.g., species richness, ecological connectivity, geophysical diversity, extractive industry threats, etc.) of a candidate BLM Area of Critical Environmental Concern under consideration.
 
